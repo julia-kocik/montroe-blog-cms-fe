@@ -1,0 +1,17 @@
+.section-header {
+  padding: 48px 8px;
+
+  h1 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .section-header {
+    padding-block: 48px;
+  }
+}

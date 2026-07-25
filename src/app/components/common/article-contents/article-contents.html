@@ -1,0 +1,12 @@
+<ol class="article-contents">
+  @for (item of contentsList(); track item.id) {
+    <li class="article-contents__item">
+      <a
+        class="article-contents__link"
+        [href]="item.link"
+      >
+        {{ item.name }}
+      </a>
+    </li>
+  }
+</ol>

@@ -1,1 +1,112 @@
-<p>article works!</p>
+@if (article(); as currentArticle) {
+  <app-section-wrapper>
+    <app-section-header
+      [text]="currentArticle.name"
+    />
+
+    <main class="article-page">
+      <div class="article-page__container">
+        <article class="article-card">
+          <span class="article-meta">
+            <time>
+              {{ currentArticle.date }}
+            </time>
+          </span>
+
+          <p class="article-lead">
+            <strong>
+              {{ currentArticle.lead }}
+            </strong>
+          </p>
+
+          <app-article-summary
+            [summaryList]="
+              currentArticle.summaryList
+            "
+          />
+
+          <app-article-contents
+            [contentsList]="
+              currentArticle.contentList
+            "
+          />
+
+          <div class="article-sections">
+            @for (
+              section of
+                currentArticle.articleStructure;
+              track section.id
+            ) {
+              <section class="article-section">
+               <app-section-sub-header
+  [text]="section.subHeading"
+/>
+
+                <p class="article-section__paragraph">
+                  {{ section.paragraph }}
+                </p>
+
+                @if (section.imageLarge) {
+                  <app-article-image
+                    [src]="
+                      getImageSrc(
+                        section.imageLarge
+                      )
+                    "
+                    [alt]="section.subHeading"
+                    height="500px"
+                    [hiddenOnSmall]="true"
+                  />
+                }
+
+                @if (section.imageSm) {
+                  <app-article-image
+                    [src]="
+                      getImageSrc(
+                        section.imageSm
+                      )
+                    "
+                    [alt]="section.subHeading"
+                    height="350px"
+                    [hiddenOnLarge]="true"
+                  />
+                }
+              </section>
+            }
+          </div>
+
+          <div class="article-card__action">
+            <a
+              class="audit-button"
+              routerLink="/contact"
+            >
+              Zamawiam darmowy audyt
+            </a>
+          </div>
+        </article>
+      </div>
+    </main>
+  </app-section-wrapper>
+} @else {
+  <main class="article-not-found">
+    <div class="article-not-found__card">
+      <span class="article-not-found__code">
+        404
+      </span>
+
+      <h1>Nie znaleziono artykułu</h1>
+
+      <p>
+        Artykuł nie istnieje albo jego adres
+        został zmieniony.
+      </p>
+
+      <a
+        class="audit-button"
+        routerLink="/dashboard"
+      >
+        Wróć do panelu
+      </a>
+    </div>
+  </main>
+}

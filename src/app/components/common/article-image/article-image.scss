@@ -1,0 +1,57 @@
+:host {
+    display: block;
+}
+
+.article-image {
+
+    position: relative;
+
+    width: 100%;
+
+    margin-top: 24px;
+
+}
+
+.article-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+
+}
+
+.hidden-on-small {
+
+    display: none;
+
+}
+
+@media (min-width:768px){
+
+    .hidden-on-small{
+
+        display:block;
+
+    }
+
+}
+
+.hidden-on-large{
+
+    display:block;
+
+}
+
+@media (min-width:768px){
+
+    .hidden-on-large{
+
+        display:none;
+
+    }
+
+}

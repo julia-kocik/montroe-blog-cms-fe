@@ -1,0 +1,704 @@
+<main class="article-edit">
+  <div class="article-edit__header">
+    <div>
+      <p class="article-edit__eyebrow">
+        Panel administracyjny
+      </p>
+
+      <h1>
+        {{
+          isNewArticle
+            ? 'Nowy artykuł'
+            : 'Edytuj artykuł'
+        }}
+      </h1>
+
+      <p class="article-edit__description">
+        Zmień dane artykułu, podsumowanie, spis
+        treści oraz wszystkie sekcje.
+      </p>
+    </div>
+
+    <div class="article-edit__actions">
+      @if (!isNewArticle && article().path) {
+        <a
+          class="button button--preview"
+          [routerLink]="[
+            '/blog',
+            article().path
+          ]"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Podgląd
+        </a>
+      }
+
+      <button
+        type="button"
+        class="button button--save"
+        (click)="saveArticle()"
+      >
+        Zapisz
+      </button>
+
+      <a
+        class="button button--cancel"
+        routerLink="/dashboard"
+      >
+        Anuluj
+      </a>
+    </div>
+  </div>
+
+  <form
+    class="article-edit__form"
+    (submit)="$event.preventDefault()"
+  >
+    <section class="form-section">
+      <div class="form-section__header">
+        <div>
+          <span class="form-section__number">
+            01
+          </span>
+
+          <h2>Podstawowe informacje</h2>
+        </div>
+
+        <p>
+          Główne dane wyświetlane na stronie
+          artykułu.
+        </p>
+      </div>
+
+      <div class="form-grid">
+        <label
+          class="form-field form-field--full"
+        >
+          <span>Tytuł</span>
+
+          <input
+            type="text"
+            [ngModel]="article().name"
+            (ngModelChange)="
+              article.update(current => ({
+                ...current,
+                name: $event
+              }))
+            "
+            name="name"
+            placeholder="Wpisz tytuł artykułu"
+          />
+        </label>
+
+        <label
+          class="form-field form-field--full"
+        >
+          <span>Adres artykułu</span>
+
+          <div class="input-prefix">
+            <span>/blog/</span>
+
+            <input
+              type="text"
+              [ngModel]="article().path"
+              (ngModelChange)="
+                article.update(current => ({
+                  ...current,
+                  path: $event
+                }))
+              "
+              name="path"
+              placeholder="adres-artykulu"
+            />
+          </div>
+        </label>
+
+        <label class="form-field">
+          <span>Data</span>
+
+          <input
+            type="text"
+            [ngModel]="article().date"
+            (ngModelChange)="
+              article.update(current => ({
+                ...current,
+                date: $event
+              }))
+            "
+            name="date"
+            placeholder="9 listopada 2025 r."
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Obraz główny</span>
+
+          <input
+            type="text"
+            [ngModel]="article().img"
+            (ngModelChange)="
+              article.update(current => ({
+                ...current,
+                img: $event
+              }))
+            "
+            name="img"
+            placeholder="nazwa-obrazu.png"
+          />
+        </label>
+
+        @if (article().img) {
+          <div
+            class="image-preview form-field--full"
+          >
+            <div class="image-preview__header">
+              <span>
+                Podgląd obrazu głównego
+              </span>
+
+              <code>
+                /{{ article().img }}
+              </code>
+            </div>
+
+            <img
+              [src]="
+                '/' + article().img
+              "
+              [alt]="article().name"
+            />
+          </div>
+        }
+
+        <label
+          class="form-field form-field--full"
+        >
+          <span>Lead</span>
+
+          <textarea
+            rows="6"
+            [ngModel]="article().lead"
+            (ngModelChange)="
+              article.update(current => ({
+                ...current,
+                lead: $event
+              }))
+            "
+            name="lead"
+            placeholder="Wprowadzenie do artykułu"
+          ></textarea>
+        </label>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="form-section__header">
+        <div>
+          <span class="form-section__number">
+            02
+          </span>
+
+          <h2>Najważniejsze informacje</h2>
+        </div>
+
+        <p>
+          Lista punktów wyświetlana na początku
+          artykułu.
+        </p>
+      </div>
+
+      <div class="collection">
+        @for (
+          item of article().summaryList;
+          track item.id;
+          let index = $index
+        ) {
+          <div class="collection-item">
+            <span class="collection-item__index">
+              {{ index + 1 }}
+            </span>
+
+            <label class="form-field">
+              <span>Treść punktu</span>
+
+              <textarea
+                rows="3"
+                [ngModel]="item.name"
+                (ngModelChange)="
+                  updateSummaryItem(
+                    item.id,
+                    $event
+                  )
+                "
+                [name]="
+                  'summary-' + item.id
+                "
+                placeholder="Wpisz najważniejszą informację"
+              ></textarea>
+            </label>
+
+            <button
+              type="button"
+              class="icon-button icon-button--delete"
+              aria-label="Usuń punkt"
+              title="Usuń punkt"
+              (click)="
+                removeSummaryItem(item.id)
+              "
+            >
+              ×
+            </button>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <h3>Brak punktów</h3>
+
+            <p>
+              Dodaj pierwszy punkt
+              podsumowania.
+            </p>
+          </div>
+        }
+
+        <button
+          type="button"
+          class="button button--secondary"
+          (click)="addSummaryItem()"
+        >
+          + Dodaj punkt
+        </button>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="form-section__header">
+        <div>
+          <span class="form-section__number">
+            03
+          </span>
+
+          <h2>Spis treści</h2>
+        </div>
+
+        <p>
+          Odnośniki prowadzące do sekcji
+          artykułu.
+        </p>
+      </div>
+
+      <div class="collection">
+        @for (
+          item of article().contentList;
+          track item.id;
+          let index = $index
+        ) {
+          <div class="collection-item">
+            <span class="collection-item__index">
+              {{ index + 1 }}
+            </span>
+
+            <div
+              class="collection-item__fields"
+            >
+              <label class="form-field">
+                <span>Nazwa pozycji</span>
+
+                <input
+                  type="text"
+                  [ngModel]="item.name"
+                  (ngModelChange)="
+                    updateContentItem(
+                      item.id,
+                      'name',
+                      $event
+                    )
+                  "
+                  [name]="
+                    'content-name-' + item.id
+                  "
+                  placeholder="Nazwa sekcji"
+                />
+              </label>
+
+              <label class="form-field">
+                <span>Odnośnik</span>
+
+                <input
+                  type="text"
+                  [ngModel]="item.link"
+                  (ngModelChange)="
+                    updateContentItem(
+                      item.id,
+                      'link',
+                      $event
+                    )
+                  "
+                  [name]="
+                    'content-link-' + item.id
+                  "
+                  placeholder="#slug-sekcji"
+                />
+              </label>
+            </div>
+
+            <button
+              type="button"
+              class="icon-button icon-button--delete"
+              aria-label="Usuń pozycję"
+              title="Usuń pozycję"
+              (click)="
+                removeContentItem(item.id)
+              "
+            >
+              ×
+            </button>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <h3>Brak spisu treści</h3>
+
+            <p>
+              Dodaj pierwszą pozycję spisu
+              treści.
+            </p>
+          </div>
+        }
+
+        <button
+          type="button"
+          class="button button--secondary"
+          (click)="addContentItem()"
+        >
+          + Dodaj pozycję
+        </button>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="form-section__header">
+        <div>
+          <span class="form-section__number">
+            04
+          </span>
+
+          <h2>Sekcje artykułu</h2>
+        </div>
+
+        <p>
+          Nagłówki, akapity i obrazy
+          właściwej treści artykułu.
+        </p>
+      </div>
+
+      <div class="sections">
+        @for (
+          section of
+            article().articleStructure;
+          track section.id;
+          let index = $index;
+          let first = $first;
+          let last = $last
+        ) {
+          <article
+            class="article-section-card"
+          >
+            <div
+              class="article-section-card__header"
+            >
+              <div>
+                <span
+                  class="article-section-card__label"
+                >
+                  Sekcja {{ index + 1 }}
+                </span>
+
+                <h3>
+                  {{
+                    section.subHeading ||
+                      'Bez tytułu'
+                  }}
+                </h3>
+              </div>
+
+              <div
+                class="article-section-card__actions"
+              >
+                <button
+                  type="button"
+                  class="icon-button"
+                  [disabled]="first"
+                  aria-label="Przenieś wyżej"
+                  title="Przenieś wyżej"
+                  (click)="
+                    moveSectionUp(index)
+                  "
+                >
+                  ↑
+                </button>
+
+                <button
+                  type="button"
+                  class="icon-button"
+                  [disabled]="last"
+                  aria-label="Przenieś niżej"
+                  title="Przenieś niżej"
+                  (click)="
+                    moveSectionDown(index)
+                  "
+                >
+                  ↓
+                </button>
+
+                <button
+                  type="button"
+                  class="icon-button icon-button--delete"
+                  aria-label="Usuń sekcję"
+                  title="Usuń sekcję"
+                  (click)="
+                    removeSection(section.id)
+                  "
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <label class="form-field">
+                <span>Nagłówek sekcji</span>
+
+                <input
+                  type="text"
+                  [ngModel]="
+                    section.subHeading
+                  "
+                  (ngModelChange)="
+                    updateSection(
+                      section.id,
+                      'subHeading',
+                      $event
+                    )
+                  "
+                  [name]="
+                    'section-heading-' +
+                    section.id
+                  "
+                  placeholder="Nagłówek sekcji"
+                />
+              </label>
+
+              <label class="form-field">
+                <span>Slug sekcji</span>
+
+                <input
+                  type="text"
+                  [ngModel]="section.slug"
+                  (ngModelChange)="
+                    updateSection(
+                      section.id,
+                      'slug',
+                      $event
+                    )
+                  "
+                  [name]="
+                    'section-slug-' +
+                    section.id
+                  "
+                  placeholder="slug-sekcji"
+                />
+              </label>
+
+              <label
+                class="form-field form-field--full"
+              >
+                <span>Treść sekcji</span>
+
+                <textarea
+                  rows="10"
+                  [ngModel]="
+                    section.paragraph
+                  "
+                  (ngModelChange)="
+                    updateSection(
+                      section.id,
+                      'paragraph',
+                      $event
+                    )
+                  "
+                  [name]="
+                    'section-paragraph-' +
+                    section.id
+                  "
+                  placeholder="Wpisz treść sekcji"
+                ></textarea>
+              </label>
+
+              <label class="form-field">
+                <span>Obraz desktop</span>
+
+                <input
+                  type="text"
+                  [ngModel]="
+                    section.imageLarge
+                  "
+                  (ngModelChange)="
+                    updateSection(
+                      section.id,
+                      'imageLarge',
+                      $event
+                    )
+                  "
+                  [name]="
+                    'section-image-large-' +
+                    section.id
+                  "
+                  placeholder="obraz-desktop.png"
+                />
+              </label>
+
+              <label class="form-field">
+                <span>Obraz mobile</span>
+
+                <input
+                  type="text"
+                  [ngModel]="section.imageSm"
+                  (ngModelChange)="
+                    updateSection(
+                      section.id,
+                      'imageSm',
+                      $event
+                    )
+                  "
+                  [name]="
+                    'section-image-small-' +
+                    section.id
+                  "
+                  placeholder="obraz-mobile.png"
+                />
+              </label>
+
+              @if (
+                section.imageLarge ||
+                section.imageSm
+              ) {
+                <div
+                  class="section-images form-field--full"
+                >
+                  @if (
+                    section.imageLarge
+                  ) {
+                    <div
+                      class="section-image-preview"
+                    >
+                      <span>Desktop</span>
+
+                      <img
+                        [src]="
+                          '/' +
+                          section.imageLarge
+                        "
+                        [alt]="
+                          section.subHeading
+                        "
+                      />
+                    </div>
+                  }
+
+                  @if (section.imageSm) {
+                    <div
+                      class="section-image-preview"
+                    >
+                      <span>Mobile</span>
+
+                      <img
+                        [src]="
+                          '/' +
+                          section.imageSm
+                        "
+                        [alt]="
+                          section.subHeading
+                        "
+                      />
+                    </div>
+                  }
+                </div>
+              }
+
+              @if (
+                section.slug ===
+                'kalkulator-oplat-za-moc-bierna'
+              ) {
+                <div
+                  class="special-component form-field--full"
+                >
+                  <strong>
+                    Kalkulator mocy biernej
+                  </strong>
+
+                  <p>
+                    W tym miejscu artykułu
+                    zostanie wyświetlony
+                    kalkulator.
+                  </p>
+                </div>
+              }
+            </div>
+          </article>
+        } @empty {
+          <div
+            class="empty-state empty-state--large"
+          >
+            <h3>Brak sekcji artykułu</h3>
+
+            <p>
+              Dodaj pierwszą sekcję właściwej
+              treści.
+            </p>
+          </div>
+        }
+
+        <button
+          type="button"
+          class="button button--add-section"
+          (click)="addSection()"
+        >
+          + Dodaj sekcję artykułu
+        </button>
+      </div>
+    </section>
+
+    <div
+      class="article-edit__bottom-actions"
+    >
+      <a
+        class="button button--cancel"
+        routerLink="/dashboard"
+      >
+        Anuluj
+      </a>
+
+      @if (!isNewArticle && article().path) {
+        <a
+          class="button button--preview"
+          [routerLink]="[
+            '/blog',
+            article().path
+          ]"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Podgląd
+        </a>
+      }
+
+      <button
+        type="button"
+        class="button button--save"
+        (click)="saveArticle()"
+      >
+        Zapisz artykuł
+      </button>
+    </div>
+  </form>
+</main>

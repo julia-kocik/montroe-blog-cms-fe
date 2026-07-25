@@ -1,24 +1,45 @@
 import { Routes } from '@angular/router';
 
-import { Dashboard } from './pages/dashboard/dashboard';
-import { Login } from './pages/login/login';
-
 export const routes: Routes = [
   {
-    path: 'login',
-    component: Login,
+    path: 'dashboard',
+    loadComponent: () =>
+      import(
+        './pages/dashboard/dashboard'
+      ).then(
+        (component) => component.Dashboard
+      ),
   },
   {
-    path: 'dashboard',
-    component: Dashboard,
+    path: 'dashboard/new',
+    loadComponent: () =>
+      import(
+        './pages/article-edit/article-edit'
+      ).then(
+        (component) => component.ArticleEdit
+      ),
+  },
+  {
+    path: 'dashboard/edit/:id',
+    loadComponent: () =>
+      import(
+        './pages/article-edit/article-edit'
+      ).then(
+        (component) => component.ArticleEdit
+      ),
+  },
+  {
+    path: 'blog/:path',
+    loadComponent: () =>
+      import(
+        './pages/article/article'
+      ).then(
+        (component) => component.Article
+      ),
   },
   {
     path: '',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
-    redirectTo: 'dashboard',
-  },
-  {
-    path: '**',
-    redirectTo: 'dashboard',
   },
 ];

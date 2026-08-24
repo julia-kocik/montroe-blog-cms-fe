@@ -38,6 +38,13 @@ export const routes: Routes = [
       ),
   },
   {
+  path: 'login',
+    loadComponent: () =>
+      import('./pages/login/login').then(
+        (component) => component.Login
+      ),
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',

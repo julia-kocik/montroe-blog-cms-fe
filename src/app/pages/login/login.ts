@@ -5,6 +5,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -30,12 +33,26 @@ export class Login {
     }),
   });
 
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router
+  ) {}
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
-    console.log(this.loginForm.getRawValue());
+    const { email, password } = this.loginForm.getRawValue();
+
+    this.authService.login(email, password).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error('Login failed', error);
+      },
+    });
   }
 }

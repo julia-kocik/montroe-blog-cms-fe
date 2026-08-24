@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 
-import { ArticleContentItem } from '../../../models/article.model';
+import { ArticleTableOfContentItem} from '../../../models/article.model';
 
 @Component({
   selector: 'app-article-contents',
@@ -11,5 +11,5 @@ import { ArticleContentItem } from '../../../models/article.model';
 })
 export class ArticleContents {
   readonly contentsList =
-    input.required<ArticleContentItem[]>();
+    input.required<ArticleTableOfContentItem[]>();
 }

@@ -1,21 +1,23 @@
 import {
   Component,
-  computed,
   inject,
+  signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ActivatedRoute,
   RouterLink,
 } from '@angular/router';
 
+import { Article as ArticleModel } from '../../models/article.model';
 import { ArticleService } from '../../services/article';
+
 import { ArticleContents } from '../../components/common/article-contents/article-contents';
 import { ArticleImage } from '../../components/common/article-image/article-image';
 import { ArticleSummary } from '../../components/common/article-summary/article-summary';
 import { SectionHeader } from '../../components/common/section-header/section-header';
 import { SectionWrapper } from '../../components/common/section-wrapper/section-wrapper';
 import { SectionSubHeader } from '../../components/common/section-sub-header/section-sub-header';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-article',
@@ -28,6 +30,7 @@ import { SectionSubHeader } from '../../components/common/section-sub-header/sec
     SectionHeader,
     SectionWrapper,
     SectionSubHeader,
+    DatePipe,
   ],
   templateUrl: './article.html',
   styleUrl: './article.scss',
@@ -38,29 +41,30 @@ export class Article {
   private readonly articleService =
     inject(ArticleService);
 
-  private readonly paramMap = toSignal(
-    this.route.paramMap,
-    {
-      initialValue:
-        this.route.snapshot.paramMap,
-    }
+  readonly article = signal<ArticleModel | undefined>(
+    undefined
   );
 
-  readonly path = computed(() =>
-    this.paramMap().get('path')
-  );
+  constructor() {
+    const path =
+      this.route.snapshot.paramMap.get('path');
 
-  readonly article = computed(() => {
-    const path = this.path();
-
-    if (!path) {
-      return undefined;
+    if (path) {
+      this.articleService
+        .getArticleByPath(path)
+        .subscribe({
+          next: (article) => {
+            this.article.set(article);
+          },
+          error: (error) => {
+            console.error(
+              'Failed to load article',
+              error
+            );
+          },
+        });
     }
-
-    return this.articleService.getArticleByPath(
-      path
-    );
-  });
+  }
 
   getImageSrc(src: string): string {
     if (

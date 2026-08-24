@@ -5,27 +5,27 @@ export interface Article {
   image: string;
   path: string;
   lead: string;
-  summaryList: ArticleSummaryItem[];
-  contentList: ArticleContentItem[];
-  articleStructure: ArticleSection[];
+  summaryItems: ArticleSummaryItem[];
+  tableOfContentItems: ArticleTableOfContentItem[];
+  sections: ArticleSection[];
 }
 
 export interface ArticleSummaryItem {
-  id: number;
+  id: string;
   name: string;
 }
 
-export interface ArticleContentItem {
-  id: number;
+export interface ArticleTableOfContentItem {
+  id: string;
   name: string;
   link: string;
 }
 
 export interface ArticleSection {
-  id: number;
+  id: string;
   subHeading: string;
   paragraph: string;
   imageLarge: string;
-  imageSm: string;
+  imageSmall: string;
   slug: string;
 }

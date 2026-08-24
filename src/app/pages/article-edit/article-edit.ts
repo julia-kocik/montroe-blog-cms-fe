@@ -8,9 +8,9 @@ import {
 
 import {
   Article,
-  ArticleContentItem,
   ArticleSection,
   ArticleSummaryItem,
+  ArticleTableOfContentItem,
 } from '../../models/article.model';
 import { ArticleService } from '../../services/article';
 
@@ -34,32 +34,30 @@ export class ArticleEdit {
 
   readonly isNewArticle = this.articleId === null;
 
-  readonly article = signal<Article>(
-    this.createInitialArticle()
-  );
+  readonly article = signal<Article>({
+  id: crypto.randomUUID(),
+  publicationDate: '',
+  name: '',
+  image: '',
+  path: '',
+  lead: '',
+  summaryItems: [],
+  tableOfContentItems: [],
+  sections: [],
+});
 
-  private createInitialArticle(): Article {
-    if (this.articleId) {
-      const existingArticle =
-        this.articleService.getArticleById(this.articleId);
-
-      if (existingArticle) {
-        return structuredClone(existingArticle);
-      }
-    }
-
-    return {
-      id: crypto.randomUUID(),
-      publicationDate: '',
-      name: '',
-      image: '',
-      path: '',
-      lead: '',
-      summaryList: [],
-      contentList: [],
-      articleStructure: [],
-    };
+constructor() {
+  if (this.articleId) {
+    this.articleService.getArticleById(this.articleId).subscribe({
+      next: (article) => {
+        this.article.set(article);
+      },
+      error: (error) => {
+        console.error('Failed to load article', error);
+      },
+    });
   }
+}
 
   saveArticle(): void {
     const articleToSave = this.article();
@@ -85,30 +83,26 @@ export class ArticleEdit {
 
   addSummaryItem(): void {
     const newItem: ArticleSummaryItem = {
-      id: this.generateNumericId(
-        this.article().summaryList.map(
-          (item) => item.id
-        )
-      ),
+      id: crypto.randomUUID(),
       name: '',
     };
 
     this.article.update((current) => ({
       ...current,
-      summaryList: [
-        ...current.summaryList,
+      summaryItems: [
+        ...current.summaryItems,
         newItem,
       ],
     }));
   }
 
   updateSummaryItem(
-    id: number,
+    id: string,
     name: string
   ): void {
     this.article.update((current) => ({
       ...current,
-      summaryList: current.summaryList.map(
+      summaryItems: current.summaryItems.map(
         (item) =>
           item.id === id
             ? {
@@ -120,112 +114,114 @@ export class ArticleEdit {
     }));
   }
 
-  removeSummaryItem(id: number): void {
+
+  useJpgFallback(event: Event, image: string): void {
+    const img = event.target as HTMLImageElement;
+
+    if (img.src.endsWith('.png')) {
+      img.src = `/${image}.jpg`;
+    }
+  }
+
+  removeSummaryItem(id: string): void {
     this.article.update((current) => ({
       ...current,
-      summaryList: current.summaryList.filter(
+      summaryItems: current.summaryItems.filter(
         (item) => item.id !== id
       ),
     }));
   }
 
   addContentItem(): void {
-    const newItem: ArticleContentItem = {
-      id: this.generateNumericId(
-        this.article().contentList.map(
-          (item) => item.id
-        )
-      ),
+    const newItem: ArticleTableOfContentItem = {
+      id: crypto.randomUUID(),
       name: '',
       link: '',
     };
 
     this.article.update((current) => ({
       ...current,
-      contentList: [
-        ...current.contentList,
+      tableOfContentItems: [
+        ...current.tableOfContentItems,
         newItem,
       ],
     }));
   }
 
   updateContentItem(
-    id: number,
+    id: string,
     field: 'name' | 'link',
     value: string
   ): void {
     this.article.update((current) => ({
       ...current,
-      contentList: current.contentList.map(
-        (item) =>
-          item.id === id
-            ? {
-                ...item,
-                [field]: value,
-              }
-            : item
-      ),
+      tableOfContentItems:
+        current.tableOfContentItems.map(
+          (item) =>
+            item.id === id
+              ? {
+                  ...item,
+                  [field]: value,
+                }
+              : item
+        ),
     }));
   }
 
-  removeContentItem(id: number): void {
+  removeContentItem(id: string): void {
     this.article.update((current) => ({
       ...current,
-      contentList: current.contentList.filter(
-        (item) => item.id !== id
-      ),
+      tableOfContentItems:
+        current.tableOfContentItems.filter(
+          (item) => item.id !== id
+        ),
     }));
   }
 
   addSection(): void {
     const newSection: ArticleSection = {
-      id: this.generateNumericId(
-        this.article().articleStructure.map(
-          (section) => section.id
-        )
-      ),
+      id: crypto.randomUUID(),
       subHeading: '',
       paragraph: '',
       imageLarge: '',
-      imageSm: '',
+      imageSmall: '',
       slug: '',
     };
 
     this.article.update((current) => ({
       ...current,
-      articleStructure: [
-        ...current.articleStructure,
+      sections: [
+        ...current.sections,
         newSection,
       ],
     }));
   }
 
   updateSection(
-    id: number,
+    id: string,
     field:
       | 'subHeading'
       | 'paragraph'
       | 'imageLarge'
-      | 'imageSm'
+      | 'imageSmall'
       | 'slug',
     value: string
   ): void {
     this.article.update((current) => ({
       ...current,
-      articleStructure:
-        current.articleStructure.map(
-          (section) =>
-            section.id === id
-              ? {
-                  ...section,
-                  [field]: value,
-                }
-              : section
-        ),
+      sections: current.sections.map(
+        (section) =>
+          section.id === id
+            ? {
+                ...section,
+                [field]: value,
+              }
+            : section
+      ),
     }));
   }
 
-  removeSection(id: number): void {
+  removeSection(id: string): void {
     const shouldRemove = confirm(
       'Czy na pewno chcesz usunąć tę sekcję?'
     );
@@ -236,10 +232,9 @@ export class ArticleEdit {
 
     this.article.update((current) => ({
       ...current,
-      articleStructure:
-        current.articleStructure.filter(
-          (section) => section.id !== id
-        ),
+      sections: current.sections.filter(
+        (section) => section.id !== id
+      ),
     }));
   }
 
@@ -249,9 +244,7 @@ export class ArticleEdit {
     }
 
     this.article.update((current) => {
-      const sections = [
-        ...current.articleStructure,
-      ];
+      const sections = [...current.sections];
 
       [
         sections[index - 1],
@@ -263,23 +256,18 @@ export class ArticleEdit {
 
       return {
         ...current,
-        articleStructure: sections,
+        sections,
       };
     });
   }
 
   moveSectionDown(index: number): void {
-    if (
-      index >=
-      this.article().articleStructure.length - 1
-    ) {
+    if (index >= this.article().sections.length - 1) {
       return;
     }
 
     this.article.update((current) => {
-      const sections = [
-        ...current.articleStructure,
-      ];
+      const sections = [...current.sections];
 
       [
         sections[index],
@@ -291,18 +279,8 @@ export class ArticleEdit {
 
       return {
         ...current,
-        articleStructure: sections,
+        sections,
       };
     });
-  }
-
-  private generateNumericId(
-    ids: number[]
-  ): number {
-    if (ids.length === 0) {
-      return 1;
-    }
-
-    return Math.max(...ids) + 1;
   }
 }

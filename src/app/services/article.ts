@@ -44,18 +44,16 @@ export class ArticleService {
     });
   }
 
-  getArticleById(id: string): Article | undefined {
-    return this.articles().find(
-      (article) => article.id === id
-    );
+  getArticleById(id: string) {
+    return this.http.get<Article>(`${this.apiUrl}/${id}`);
   }
 
-  getArticleByPath(path: string): Article | undefined {
-    return this.articles().find(
-      (article) => article.path === path
+  getArticleByPath(path: string) {
+    return this.http.get<Article>(
+      `${this.apiUrl}/path/${path}`
     );
   }
-
+//
   addArticle(article: Article): void {
     this.articles.update((articles) => [
       ...articles,

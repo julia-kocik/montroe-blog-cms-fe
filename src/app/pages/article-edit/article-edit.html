@@ -163,10 +163,9 @@
             </div>
 
             <img
-              [src]="
-                '/' + article().image
-              "
+              [src]="'/' + article().image + '.png'"
               [alt]="article().name"
+              (error)="useJpgFallback($event, article().image)"
             />
           </div>
         }
@@ -210,7 +209,7 @@
 
       <div class="collection">
         @for (
-          item of article().summaryList;
+          item of article().summaryItems;
           track item.id;
           let index = $index
         ) {
@@ -231,9 +230,7 @@
                     $event
                   )
                 "
-                [name]="
-                  'summary-' + item.id
-                "
+                [name]="'summary-' + item.id"
                 placeholder="Wpisz najważniejszą informację"
               ></textarea>
             </label>
@@ -243,9 +240,7 @@
               class="icon-button icon-button--delete"
               aria-label="Usuń punkt"
               title="Usuń punkt"
-              (click)="
-                removeSummaryItem(item.id)
-              "
+              (click)="removeSummaryItem(item.id)"
             >
               ×
             </button>
@@ -289,7 +284,7 @@
 
       <div class="collection">
         @for (
-          item of article().contentList;
+          item of article().tableOfContentItems;
           track item.id;
           let index = $index
         ) {
@@ -314,9 +309,7 @@
                       $event
                     )
                   "
-                  [name]="
-                    'content-name-' + item.id
-                  "
+                  [name]="'content-name-' + item.id"
                   placeholder="Nazwa sekcji"
                 />
               </label>
@@ -334,9 +327,7 @@
                       $event
                     )
                   "
-                  [name]="
-                    'content-link-' + item.id
-                  "
+                  [name]="'content-link-' + item.id"
                   placeholder="#slug-sekcji"
                 />
               </label>
@@ -347,9 +338,7 @@
               class="icon-button icon-button--delete"
               aria-label="Usuń pozycję"
               title="Usuń pozycję"
-              (click)="
-                removeContentItem(item.id)
-              "
+              (click)="removeContentItem(item.id)"
             >
               ×
             </button>
@@ -393,8 +382,7 @@
 
       <div class="sections">
         @for (
-          section of
-            article().articleStructure;
+          section of article().sections;
           track section.id;
           let index = $index;
           let first = $first;
@@ -430,9 +418,7 @@
                   [disabled]="first"
                   aria-label="Przenieś wyżej"
                   title="Przenieś wyżej"
-                  (click)="
-                    moveSectionUp(index)
-                  "
+                  (click)="moveSectionUp(index)"
                 >
                   ↑
                 </button>
@@ -443,9 +429,7 @@
                   [disabled]="last"
                   aria-label="Przenieś niżej"
                   title="Przenieś niżej"
-                  (click)="
-                    moveSectionDown(index)
-                  "
+                  (click)="moveSectionDown(index)"
                 >
                   ↓
                 </button>
@@ -455,9 +439,7 @@
                   class="icon-button icon-button--delete"
                   aria-label="Usuń sekcję"
                   title="Usuń sekcję"
-                  (click)="
-                    removeSection(section.id)
-                  "
+                  (click)="removeSection(section.id)"
                 >
                   ×
                 </button>
@@ -470,9 +452,7 @@
 
                 <input
                   type="text"
-                  [ngModel]="
-                    section.subHeading
-                  "
+                  [ngModel]="section.subHeading"
                   (ngModelChange)="
                     updateSection(
                       section.id,
@@ -480,10 +460,7 @@
                       $event
                     )
                   "
-                  [name]="
-                    'section-heading-' +
-                    section.id
-                  "
+                  [name]="'section-heading-' + section.id"
                   placeholder="Nagłówek sekcji"
                 />
               </label>
@@ -501,10 +478,7 @@
                       $event
                     )
                   "
-                  [name]="
-                    'section-slug-' +
-                    section.id
-                  "
+                  [name]="'section-slug-' + section.id"
                   placeholder="slug-sekcji"
                 />
               </label>
@@ -516,9 +490,7 @@
 
                 <textarea
                   rows="10"
-                  [ngModel]="
-                    section.paragraph
-                  "
+                  [ngModel]="section.paragraph"
                   (ngModelChange)="
                     updateSection(
                       section.id,
@@ -526,10 +498,7 @@
                       $event
                     )
                   "
-                  [name]="
-                    'section-paragraph-' +
-                    section.id
-                  "
+                  [name]="'section-paragraph-' + section.id"
                   placeholder="Wpisz treść sekcji"
                 ></textarea>
               </label>
@@ -539,9 +508,7 @@
 
                 <input
                   type="text"
-                  [ngModel]="
-                    section.imageLarge
-                  "
+                  [ngModel]="section.imageLarge"
                   (ngModelChange)="
                     updateSection(
                       section.id,
@@ -549,10 +516,7 @@
                       $event
                     )
                   "
-                  [name]="
-                    'section-image-large-' +
-                    section.id
-                  "
+                  [name]="'section-image-large-' + section.id"
                   placeholder="obraz-desktop.png"
                 />
               </label>
@@ -562,61 +526,50 @@
 
                 <input
                   type="text"
-                  [ngModel]="section.imageSm"
+                  [ngModel]="section.imageSmall"
                   (ngModelChange)="
                     updateSection(
                       section.id,
-                      'imageSm',
+                      'imageSmall',
                       $event
                     )
                   "
-                  [name]="
-                    'section-image-small-' +
-                    section.id
-                  "
+                  [name]="'section-image-small-' + section.id"
                   placeholder="obraz-mobile.png"
                 />
               </label>
 
               @if (
                 section.imageLarge ||
-                section.imageSm
+                section.imageSmall
               ) {
                 <div
                   class="section-images form-field--full"
                 >
-                  @if (
-                    section.imageLarge
-                  ) {
+                  @if (section.imageLarge) {
                     <div
                       class="section-image-preview"
                     >
                       <span>Desktop</span>
 
-                      <img
-                        [src]="
-                          section.imageLarge
-                        "
-                        [alt]="
-                          section.subHeading
-                        "
-                      />
+                    <img
+                      [src]="'/' + article().image + '.png'"
+                      [alt]="article().name"
+                      (error)="useJpgFallback($event, article().image)"
+                    />
                     </div>
                   }
 
-                  @if (section.imageSm) {
+                  @if (section.imageSmall) {
                     <div
                       class="section-image-preview"
                     >
                       <span>Mobile</span>
 
                       <img
-                        [src]="
-                          section.imageSm
-                        "
-                        [alt]="
-                          section.subHeading
-                        "
+                        [src]="'/' + article().image + '.png'"
+                        [alt]="article().name"
+                        (error)="useJpgFallback($event, article().image)"
                       />
                     </div>
                   }

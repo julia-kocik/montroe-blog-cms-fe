@@ -1,0 +1,29 @@
+.logout-button {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  z-index: 1000;
+
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+
+  background: #4d4775;
+  color: #fff;
+
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background: #3f3965;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}

@@ -16,36 +16,38 @@ export class AuthService {
   constructor(private readonly http: HttpClient) {}
 
   login(email: string, password: string): Observable<void> {
-    return this.http
-        .get(`${this.apiUrl}/auth/csrf`, {
-        withCredentials: true,
-        responseType: 'text',
-        })
-        .pipe(
-        switchMap((token) =>
-            this.http.post<void>(
-            `${this.apiUrl}/auth/login`,
+    return this.http.post<void>(
+        `${this.apiUrl}/auth/login`,
+        {
+        email,
+        password,
+        }
+    );
+  }
+
+    me(): Observable<AuthResponse> {
+        return this.http.get<AuthResponse>(
+            `${this.apiUrl}/auth/me`,
             {
-                email,
-                password,
-            },
-            {
-                withCredentials: true,
-                headers: {
-                'X-XSRF-TOKEN': token,
-                },
+            withCredentials: true,
             }
-            )
-        )
         );
     }
 
-    me(): Observable<AuthResponse> {
-  return this.http.get<AuthResponse>(
-    `${this.apiUrl}/auth/me`,
-    {
-      withCredentials: true,
+    logout(): Observable<void> {
+        return this.http.post<void>(
+            `${this.apiUrl}/auth/logout`,
+            {}
+        );
     }
-  );
-}
+
+    getCsrfToken(): Observable<string> {
+        return this.http.get(
+            `${this.apiUrl}/auth/csrf`,
+            {
+            responseType: 'text',
+            withCredentials: true,
+            }
+        );
+    }
 }

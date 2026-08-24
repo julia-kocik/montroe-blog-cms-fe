@@ -53,21 +53,31 @@ export class ArticleService {
       `${this.apiUrl}/path/${path}`
     );
   }
-//
-  addArticle(article: Article): void {
-    this.articles.update((articles) => [
-      ...articles,
-      structuredClone(article),
-    ]);
-  }
 
-  updateArticle(updatedArticle: Article): void {
-    this.articles.update((articles) =>
-      articles.map((article) =>
-        article.id === updatedArticle.id
-          ? structuredClone(updatedArticle)
-          : article
-      )
+
+  addArticle(article: Article) {
+    return this.http.post<Article>(
+      this.apiUrl,
+      {
+        name: article.name,
+        lead: article.lead,
+        summaryItems: article.summaryItems,
+        sections: article.sections,
+        tableOfContentItems: article.tableOfContentItems,
+      }
+    );
+  }
+    updateArticle(article: Article) {
+    return this.http.patch<Article>(
+      `${this.apiUrl}/${article.id}`,
+      {
+        name: article.name,
+        image: article.image,
+        lead: article.lead,
+        summaryItems: article.summaryItems,
+        tableOfContentItems: article.tableOfContentItems,
+        sections: article.sections,
+      }
     );
   }
 

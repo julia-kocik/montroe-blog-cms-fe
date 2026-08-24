@@ -67,18 +67,27 @@ constructor() {
       return;
     }
 
-    if (!articleToSave.path.trim()) {
-      alert('Uzupełnij adres artykułu.');
+    if (this.isNewArticle) {
+      this.articleService.addArticle(articleToSave).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
+        },
+        error: (error) => {
+          console.error('Failed to create article', error);
+        },
+      });
+
       return;
     }
 
-    if (this.isNewArticle) {
-      this.articleService.addArticle(articleToSave);
-    } else {
-      this.articleService.updateArticle(articleToSave);
-    }
-
-    this.router.navigate(['/dashboard']);
+    this.articleService.updateArticle(articleToSave).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error('Failed to update article', error);
+      },
+    });
   }
 
   addSummaryItem(): void {

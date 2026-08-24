@@ -23,10 +23,7 @@
       @if (!isNewArticle && article().path) {
         <a
           class="button button--preview"
-          [routerLink]="[
-            '/blog',
-            article().path
-          ]"
+          [routerLink]="['/blog', article().path]"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -55,6 +52,7 @@
     class="article-edit__form"
     (submit)="$event.preventDefault()"
   >
+    <!-- 01 PODSTAWOWE INFORMACJE -->
     <section class="form-section">
       <div class="form-section__header">
         <div>
@@ -91,46 +89,6 @@
           />
         </label>
 
-        <label
-          class="form-field form-field--full"
-        >
-          <span>Adres artykułu</span>
-
-          <div class="input-prefix">
-            <span>/blog/</span>
-
-            <input
-              type="text"
-              [ngModel]="article().path"
-              (ngModelChange)="
-                article.update(current => ({
-                  ...current,
-                  path: $event
-                }))
-              "
-              name="path"
-              placeholder="adres-artykulu"
-            />
-          </div>
-        </label>
-
-        <label class="form-field">
-          <span>Data</span>
-
-          <input
-            type="text"
-            [ngModel]="article().publicationDate"
-            (ngModelChange)="
-              article.update(current => ({
-                ...current,
-                publicationDate: $event
-              }))
-            "
-            name="publicationDate"
-            placeholder="9 listopada 2025 r."
-          />
-        </label>
-
         <label class="form-field">
           <span>Obraz główny</span>
 
@@ -144,7 +102,7 @@
               }))
             "
             name="image"
-            placeholder="nazwa-obrazu.png"
+            placeholder="nazwa-obrazu"
           />
         </label>
 
@@ -165,7 +123,12 @@
             <img
               [src]="'/' + article().image + '.png'"
               [alt]="article().name"
-              (error)="useJpgFallback($event, article().image)"
+              (error)="
+                useJpgFallback(
+                  $event,
+                  article().image
+                )
+              "
             />
           </div>
         }
@@ -191,6 +154,7 @@
       </div>
     </section>
 
+    <!-- 02 PODSUMOWANIE -->
     <section class="form-section">
       <div class="form-section__header">
         <div>
@@ -250,8 +214,7 @@
             <h3>Brak punktów</h3>
 
             <p>
-              Dodaj pierwszy punkt
-              podsumowania.
+              Dodaj pierwszy punkt podsumowania.
             </p>
           </div>
         }
@@ -266,6 +229,7 @@
       </div>
     </section>
 
+    <!-- 03 SPIS TREŚCI -->
     <section class="form-section">
       <div class="form-section__header">
         <div>
@@ -293,9 +257,7 @@
               {{ index + 1 }}
             </span>
 
-            <div
-              class="collection-item__fields"
-            >
+            <div class="collection-item__fields">
               <label class="form-field">
                 <span>Nazwa pozycji</span>
 
@@ -364,6 +326,7 @@
       </div>
     </section>
 
+    <!-- 04 SEKCJE -->
     <section class="form-section">
       <div class="form-section__header">
         <div>
@@ -388,9 +351,7 @@
           let first = $first;
           let last = $last
         ) {
-          <article
-            class="article-section-card"
-          >
+          <article class="article-section-card">
             <div
               class="article-section-card__header"
             >
@@ -447,7 +408,9 @@
             </div>
 
             <div class="form-grid">
-              <label class="form-field">
+              <label
+                class="form-field form-field--full"
+              >
                 <span>Nagłówek sekcji</span>
 
                 <input
@@ -460,26 +423,11 @@
                       $event
                     )
                   "
-                  [name]="'section-heading-' + section.id"
-                  placeholder="Nagłówek sekcji"
-                />
-              </label>
-
-              <label class="form-field">
-                <span>Slug sekcji</span>
-
-                <input
-                  type="text"
-                  [ngModel]="section.slug"
-                  (ngModelChange)="
-                    updateSection(
-                      section.id,
-                      'slug',
-                      $event
-                    )
+                  [name]="
+                    'section-heading-' +
+                    section.id
                   "
-                  [name]="'section-slug-' + section.id"
-                  placeholder="slug-sekcji"
+                  placeholder="Nagłówek sekcji"
                 />
               </label>
 
@@ -498,7 +446,10 @@
                       $event
                     )
                   "
-                  [name]="'section-paragraph-' + section.id"
+                  [name]="
+                    'section-paragraph-' +
+                    section.id
+                  "
                   placeholder="Wpisz treść sekcji"
                 ></textarea>
               </label>
@@ -516,7 +467,10 @@
                       $event
                     )
                   "
-                  [name]="'section-image-large-' + section.id"
+                  [name]="
+                    'section-image-large-' +
+                    section.id
+                  "
                   placeholder="obraz-desktop.png"
                 />
               </label>
@@ -534,7 +488,10 @@
                       $event
                     )
                   "
-                  [name]="'section-image-small-' + section.id"
+                  [name]="
+                    'section-image-small-' +
+                    section.id
+                  "
                   placeholder="obraz-mobile.png"
                 />
               </label>
@@ -552,11 +509,10 @@
                     >
                       <span>Desktop</span>
 
-                    <img
-                      [src]="'/' + article().image + '.png'"
-                      [alt]="article().name"
-                      (error)="useJpgFallback($event, article().image)"
-                    />
+                      <img
+                        [src]="section.imageLarge"
+                        [alt]="section.subHeading"
+                      />
                     </div>
                   }
 
@@ -567,9 +523,8 @@
                       <span>Mobile</span>
 
                       <img
-                        [src]="'/' + article().image + '.png'"
-                        [alt]="article().name"
-                        (error)="useJpgFallback($event, article().image)"
+                        [src]="section.imageSmall"
+                        [alt]="section.subHeading"
                       />
                     </div>
                   }
@@ -619,9 +574,7 @@
       </div>
     </section>
 
-    <div
-      class="article-edit__bottom-actions"
-    >
+    <div class="article-edit__bottom-actions">
       <a
         class="button button--cancel"
         routerLink="/dashboard"
@@ -632,10 +585,7 @@
       @if (!isNewArticle && article().path) {
         <a
           class="button button--preview"
-          [routerLink]="[
-            '/blog',
-            article().path
-          ]"
+          [routerLink]="['/blog', article().path]"
           target="_blank"
           rel="noopener noreferrer"
         >

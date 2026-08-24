@@ -50,9 +50,9 @@ export class ArticleEdit {
 
     return {
       id: crypto.randomUUID(),
-      date: '',
+      publicationDate: '',
       name: '',
-      img: '',
+      image: '',
       path: '',
       lead: '',
       summaryList: [],

@@ -19,14 +19,15 @@
         <article class="article-card">
           <div class="article-card__image">
             <img
-                [src]="'/' + article.img"
-                [alt]="article.name"
-          />
+              [src]="'/' + article.image + '.png'"
+              [alt]="article.name"
+              (error)="useJpgFallback($event, article.image)"
+            />
           </div>
 
           <div class="article-card__content">
             <p class="article-card__date">
-              {{ article.date }}
+              {{ article.publicationDate | date:'d MMMM y':'':'pl' }}
             </p>
 
             <h3>

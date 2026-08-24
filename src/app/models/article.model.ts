@@ -1,8 +1,8 @@
 export interface Article {
   id: string;
-  date: string;
+  publicationDate: string;
   name: string;
-  img: string;
+  image: string;
   path: string;
   lead: string;
   summaryList: ArticleSummaryItem[];

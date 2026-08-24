@@ -7,7 +7,10 @@ import {
 
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { routes } from './app.routes';
+import { registerLocaleData } from '@angular/common';
+import localePl from '@angular/common/locales/pl';
 
+registerLocaleData(localePl);
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -119,14 +119,14 @@
 
           <input
             type="text"
-            [ngModel]="article().date"
+            [ngModel]="article().publicationDate"
             (ngModelChange)="
               article.update(current => ({
                 ...current,
-                date: $event
+                publicationDate: $event
               }))
             "
-            name="date"
+            name="publicationDate"
             placeholder="9 listopada 2025 r."
           />
         </label>
@@ -136,19 +136,19 @@
 
           <input
             type="text"
-            [ngModel]="article().img"
+            [ngModel]="article().image"
             (ngModelChange)="
               article.update(current => ({
                 ...current,
-                img: $event
+                image: $event
               }))
             "
-            name="img"
+            name="image"
             placeholder="nazwa-obrazu.png"
           />
         </label>
 
-        @if (article().img) {
+        @if (article().image) {
           <div
             class="image-preview form-field--full"
           >
@@ -158,13 +158,13 @@
               </span>
 
               <code>
-                /{{ article().img }}
+                /{{ article().image }}
               </code>
             </div>
 
             <img
               [src]="
-                '/' + article().img
+                '/' + article().image
               "
               [alt]="article().name"
             />

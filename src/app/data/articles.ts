@@ -3,9 +3,9 @@ import { Article } from '../models/article.model';
 export const ARTICLES: Article[] = [
   {
     id: "1",
-    date: "9 listopada 2025 r.",
+    publicationDate: "9 listopada 2025 r.",
     name: "Kompensacja mocy biernej - jak zmniejszyć rachunki za moc bierną?",
-    img: "kompensacja-mocy-biernej-jak-zmniejszyc-rachunki.png",
+    image: "kompensacja-mocy-biernej-jak-zmniejszyc-rachunki.png",
     path: "kompensacja-mocy-biernej-jak-zmniejszyc-rachunki",
     lead:
       "Czy na Twojej fakturze za prąd pojawia się pozycja „opłata za energię bierna”? Nie jesteś sam – wiele firm w Warszawie i całej Polsce płaci setki złotych miesięcznie opłaty, której można uniknąć. W tym artykule wyjaśniamy, czym jest moc bierna, dlaczego generuje dodatkowe koszty i co możesz zrobić, by zmniejszyć rachunki.",
@@ -166,9 +166,9 @@ export const ARTICLES: Article[] = [
   },
   {
     "id": "2",
-    "date": "9 listopada 2025 r.",
+    "publicationDate": "9 listopada 2025 r.",
     "name": "Modernizacja instalacji elektrycznej Warszawa – kiedy warto i ile to kosztuje?",
-    "img": "modernizacja.png",
+    "image": "modernizacja.png",
     "path": "modernizacja-instalacji-elektrycznej-warszawa",
     "lead": "Twoja instalacja elektryczna ma ponad 20 lat? W mieszkaniu często wybija bezpieczniki, a gniazdka iskrzą przy podłączaniu urządzeń? To sygnały, że instalacja wymaga modernizacji. W Warszawie stare instalacje są jedną z najczęstszych przyczyn awarii i pożarów w budynkach mieszkalnych. Wyjaśniamy, kiedy modernizacja jest konieczna, jak wygląda krok po kroku oraz ile kosztuje.",
     "summaryList": [
@@ -308,9 +308,9 @@ export const ARTICLES: Article[] = [
   },
   {
     "id": "3",
-    "date": "9 listopada 2025 r.",
+    "publicationDate": "9 listopada 2025 r.",
     "name": "Stacja ładowania samochodów elektrycznych – ile kosztuje i o czym pamiętać przy montażu?",
-    "img": "ladowarka.png",
+    "image": "ladowarka.png",
     "path": "stacja-ladowania-samochodow-elektrycznych-warszawa",
     "lead": "Coraz więcej mieszkańców Warszawy przesiada się na samochody elektryczne, ale publiczne stacje ładowania wciąż bywają zajęte lub oddalone od domu. Rozwiązaniem jest własna stacja ładowania (tzw. wallbox), która pozwala ładować auto taniej, szybciej i o dowolnej porze. Wyjaśniamy, jakie są rodzaje stacji ładowania, ile kosztuje montaż oraz jakie formalności trzeba spełnić w Warszawie.",
     "summaryList": [
@@ -400,9 +400,9 @@ export const ARTICLES: Article[] = [
   },
   {
     id: "4",
-    date: "14 maja 2026 r.",
+    publicationDate: "14 maja 2026 r.",
     name: "Kompensacja mocy biernej - jak sprawdzić czy płacę rachunki za moc bierną?",
-    img: "invoice.jpg",
+    image: "invoice.jpg",
     path: "jak-sprawdzic-czy-place-za-moc-bierna",
     lead:
       "Na wielu fakturach za prąd pojawiają się dodatkowe opłaty za energię bierną – często niezauważane przez właścicieli firm. Wystarczy jednak kilka minut, aby sprawdzić, czy Twoja firma płaci za moc bierną i oszacować możliwe oszczędności. Skorzystaj z kalkulatora i dowiedz się, czy kompensacja mocy biernej może obniżyć Twoje rachunki.",

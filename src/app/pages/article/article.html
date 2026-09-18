@@ -21,7 +21,13 @@
               {{ currentArticle.lead }}
             </strong>
           </p>
-
+          @if (currentArticle.image) {
+            <app-article-image
+              [src]="getImageUrl(currentArticle.image)"
+              [alt]="currentArticle.name"
+              height="500px"
+            />
+          }
           <app-article-summary
             [summaryList]="currentArticle.summaryItems"
           />
@@ -46,7 +52,7 @@
 
                 @if (section.imageLarge) {
                   <app-article-image
-                    [src]="getImageSrc(section.imageLarge)"
+                    [src]="getImageUrl(section.imageLarge)"
                     [alt]="section.subHeading"
                     height="500px"
                     [hiddenOnSmall]="true"
@@ -55,7 +61,7 @@
 
                 @if (section.imageSmall) {
                   <app-article-image
-                    [src]="getImageSrc(section.imageSmall)"
+                    [src]="getImageUrl(section.imageSmall)"
                     [alt]="section.subHeading"
                     height="350px"
                     [hiddenOnLarge]="true"

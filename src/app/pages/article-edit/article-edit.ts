@@ -13,6 +13,8 @@ import {
   ArticleTableOfContentItem,
 } from '../../models/article.model';
 import { ArticleService } from '../../services/article';
+import { FileService } from '../../services/file';
+import { ImageService } from '../../services/image';
 
 @Component({
   selector: 'app-article-edit',
@@ -28,12 +30,13 @@ export class ArticleEdit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly articleService = inject(ArticleService);
-
+  private readonly fileService = inject(FileService);
   readonly articleId =
     this.route.snapshot.paramMap.get('id');
 
   readonly isNewArticle = this.articleId === null;
 
+  private readonly imageService = inject(ImageService);
   readonly article = signal<Article>({
   id: crypto.randomUUID(),
   publicationDate: '',
@@ -45,6 +48,11 @@ export class ArticleEdit {
   tableOfContentItems: [],
   sections: [],
 });
+
+readonly isUploadingMainImage = signal(false);
+readonly uploadingSectionImages = signal<Set<string>>(
+  new Set()
+);
 
 constructor() {
   if (this.articleId) {
@@ -60,6 +68,13 @@ constructor() {
 }
 
   saveArticle(): void {
+    if (
+      this.isUploadingMainImage() ||
+      this.uploadingSectionImages().size > 0
+    ) {
+      alert('Poczekaj na zakończenie wysyłania obrazów.');
+      return;
+    }
     const articleToSave = this.article();
 
     if (!articleToSave.name.trim()) {
@@ -291,5 +306,98 @@ constructor() {
         sections,
       };
     });
+  }
+
+  uploadMainImage(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  this.isUploadingMainImage.set(true);
+
+  this.fileService.uploadImage(file).subscribe({
+    next: (response) => {
+      this.article.update((current) => ({
+        ...current,
+        image: response.key,
+      }));
+
+      this.isUploadingMainImage.set(false);
+    },
+    error: (error) => {
+      console.error(
+        'Failed to upload main image',
+        error
+      );
+
+      this.isUploadingMainImage.set(false);
+    },
+  });
+}
+  uploadSectionImage(
+    event: Event,
+    sectionId: string,
+    field: 'imageLarge' | 'imageSmall'
+  ): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    const uploadKey = `${sectionId}-${field}`;
+
+    this.uploadingSectionImages.update((current) => {
+      const updated = new Set(current);
+      updated.add(uploadKey);
+      return updated;
+    });
+
+    this.fileService.uploadImage(file).subscribe({
+      next: (response) => {
+        this.updateSection(
+          sectionId,
+          field,
+          response.key
+        );
+
+        this.finishSectionImageUpload(uploadKey);
+      },
+      error: (error) => {
+        console.error(
+          'Failed to upload section image',
+          error
+        );
+
+        this.finishSectionImageUpload(uploadKey);
+      },
+    });
+  }
+
+  isSectionImageUploading(
+    sectionId: string,
+    field: 'imageLarge' | 'imageSmall'
+  ): boolean {
+    return this.uploadingSectionImages().has(
+      `${sectionId}-${field}`
+    );
+  }
+
+  private finishSectionImageUpload(
+    uploadKey: string
+  ): void {
+    this.uploadingSectionImages.update((current) => {
+      const updated = new Set(current);
+      updated.delete(uploadKey);
+      return updated;
+    });
+  }
+
+  getImageUrl(image: string): string {
+    return this.imageService.getUrl(image);
   }
 }

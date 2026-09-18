@@ -19,9 +19,8 @@
         <article class="article-card">
           <div class="article-card__image">
             <img
-              [src]="'/' + article.image + '.png'"
+              [src]="getImageUrl(article.image)"
               [alt]="article.name"
-              (error)="useJpgFallback($event, article.image)"
             />
           </div>
 

@@ -35,6 +35,7 @@
         type="button"
         class="button button--save"
         (click)="saveArticle()"
+        [disabled]="isUploadingMainImage()"
       >
         Zapisz
       </button>
@@ -93,45 +94,35 @@
           <span>Obraz główny</span>
 
           <input
-            type="text"
-            [ngModel]="article().image"
-            (ngModelChange)="
-              article.update(current => ({
-                ...current,
-                image: $event
-              }))
-            "
-            name="image"
-            placeholder="nazwa-obrazu"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="uploadMainImage($event)"
           />
-        </label>
 
-        @if (article().image) {
-          <div
-            class="image-preview form-field--full"
-          >
-            <div class="image-preview__header">
-              <span>
-                Podgląd obrazu głównego
-              </span>
+          @if (isUploadingMainImage()) {
+            <small>
+              Wysyłanie obrazu...
+            </small>
+          }
 
-              <code>
-                /{{ article().image }}
-              </code>
+          @if (
+            article().image &&
+            !isUploadingMainImage()
+          ) {
+            <small>
+              {{ article().image }}
+            </small>
+
+            <div class="section-image-preview">
+              <span>Podgląd</span>
+
+              <img
+                [src]="getImageUrl(article().image)"
+                [alt]="article().name"
+              />
             </div>
-
-            <img
-              [src]="'/' + article().image + '.png'"
-              [alt]="article().name"
-              (error)="
-                useJpgFallback(
-                  $event,
-                  article().image
-                )
-              "
-            />
-          </div>
-        }
+          }
+        </label>
 
         <label
           class="form-field form-field--full"
@@ -458,78 +449,93 @@
                 <span>Obraz desktop</span>
 
                 <input
-                  type="text"
-                  [ngModel]="section.imageLarge"
-                  (ngModelChange)="
-                    updateSection(
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  (change)="
+                    uploadSectionImage(
+                      $event,
                       section.id,
-                      'imageLarge',
-                      $event
+                      'imageLarge'
                     )
                   "
-                  [name]="
-                    'section-image-large-' +
-                    section.id
-                  "
-                  placeholder="obraz-desktop.png"
                 />
+
+                @if (
+                  isSectionImageUploading(
+                    section.id,
+                    'imageLarge'
+                  )
+                ) {
+                  <small>Wysyłanie obrazu...</small>
+                }
+
+                @if (
+                  section.imageLarge &&
+                  !isSectionImageUploading(
+                    section.id,
+                    'imageLarge'
+                  )
+                ) {
+                  <small>{{ section.imageLarge }}</small>
+                }
               </label>
 
               <label class="form-field">
                 <span>Obraz mobile</span>
 
                 <input
-                  type="text"
-                  [ngModel]="section.imageSmall"
-                  (ngModelChange)="
-                    updateSection(
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  (change)="
+                    uploadSectionImage(
+                      $event,
                       section.id,
-                      'imageSmall',
-                      $event
+                      'imageSmall'
                     )
                   "
-                  [name]="
-                    'section-image-small-' +
-                    section.id
-                  "
-                  placeholder="obraz-mobile.png"
                 />
+
+                @if (
+                  isSectionImageUploading(
+                    section.id,
+                    'imageSmall'
+                  )
+                ) {
+                  <small>Wysyłanie obrazu...</small>
+                }
+
+                @if (
+                  section.imageSmall &&
+                  !isSectionImageUploading(
+                    section.id,
+                    'imageSmall'
+                  )
+                ) {
+                  <small>{{ section.imageSmall }}</small>
+                }
               </label>
 
-              @if (
-                section.imageLarge ||
-                section.imageSmall
-              ) {
-                <div
-                  class="section-images form-field--full"
-                >
-                  @if (section.imageLarge) {
-                    <div
-                      class="section-image-preview"
-                    >
-                      <span>Desktop</span>
+             @if (section.imageLarge) {
+              <div class="section-image-preview">
+                <span>Desktop</span>
 
-                      <img
-                        [src]="section.imageLarge"
-                        [alt]="section.subHeading"
-                      />
-                    </div>
-                  }
+                <img
+                  [src]="getImageUrl(section.imageLarge)"
+                  [alt]="section.subHeading"
+                />
+              </div>
+            }
 
-                  @if (section.imageSmall) {
-                    <div
-                      class="section-image-preview"
-                    >
-                      <span>Mobile</span>
+            @if (section.imageSmall) {
+              <div class="section-image-preview">
+                <span>Mobile</span>
 
-                      <img
-                        [src]="section.imageSmall"
-                        [alt]="section.subHeading"
-                      />
-                    </div>
-                  }
-                </div>
-              }
+                <img
+                  [src]="getImageUrl(section.imageSmall)"
+                  [alt]="section.subHeading"
+                />
+              </div>
+            }
 
               @if (
                 section.slug ===
@@ -597,6 +603,7 @@
         type="button"
         class="button button--save"
         (click)="saveArticle()"
+        [disabled]="isUploadingMainImage()"
       >
         Zapisz artykuł
       </button>

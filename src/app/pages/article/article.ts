@@ -18,6 +18,7 @@ import { SectionHeader } from '../../components/common/section-header/section-he
 import { SectionWrapper } from '../../components/common/section-wrapper/section-wrapper';
 import { SectionSubHeader } from '../../components/common/section-sub-header/section-sub-header';
 import { DatePipe } from '@angular/common';
+import { ImageService } from '../../services/image';
 
 @Component({
   selector: 'app-article',
@@ -40,6 +41,7 @@ export class Article {
 
   private readonly articleService =
     inject(ArticleService);
+  private readonly imageService = inject(ImageService);
 
   readonly article = signal<ArticleModel | undefined>(
     undefined
@@ -66,16 +68,7 @@ export class Article {
     }
   }
 
-  getImageSrc(src: string): string {
-    if (
-      src.startsWith('/') ||
-      src.startsWith('http://') ||
-      src.startsWith('https://') ||
-      src.startsWith('data:')
-    ) {
-      return src;
-    }
-
-    return `/images/${src}`;
+  getImageUrl(image: string): string {
+    return this.imageService.getUrl(image);
   }
 }

@@ -48,6 +48,20 @@ export class Article {
   );
 
   constructor() {
+    if (this.route.snapshot.routeConfig?.path === 'dashboard/preview') {
+      const preview = localStorage.getItem(
+        'article-preview'
+      );
+
+      if (preview) {
+        this.article.set(
+          JSON.parse(preview) as ArticleModel
+        );
+      }
+
+      return;
+    }
+
     const path =
       this.route.snapshot.paramMap.get('path');
 

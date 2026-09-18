@@ -34,6 +34,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'dashboard/preview',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/article/article').then(
+        (component) => component.Article
+      ),
+  },
+  {
     path: 'blog/:path',
     loadComponent: () =>
       import('./pages/article/article').then(

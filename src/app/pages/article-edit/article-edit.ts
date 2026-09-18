@@ -400,4 +400,17 @@ constructor() {
   getImageUrl(image: string): string {
     return this.imageService.getUrl(image);
   }
+
+  previewArticle(): void {
+    localStorage.setItem(
+      'article-preview',
+      JSON.stringify(this.article())
+    );
+
+    window.open(
+      '/dashboard/preview',
+      '_blank',
+      'noopener,noreferrer'
+    );
+  }
 }

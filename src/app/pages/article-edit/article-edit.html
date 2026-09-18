@@ -20,16 +20,13 @@
     </div>
 
     <div class="article-edit__actions">
-      @if (!isNewArticle && article().path) {
-        <a
-          class="button button--preview"
-          [routerLink]="['/blog', article().path]"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Podgląd
-        </a>
-      }
+    <button
+      type="button"
+      class="button button--preview"
+      (click)="previewArticle()"
+    >
+      Podgląd
+    </button>
 
       <button
         type="button"
@@ -588,16 +585,13 @@
         Anuluj
       </a>
 
-      @if (!isNewArticle && article().path) {
-        <a
-          class="button button--preview"
-          [routerLink]="['/blog', article().path]"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Podgląd
-        </a>
-      }
+     <button
+        type="button"
+        class="button button--preview"
+        (click)="previewArticle()"
+      >
+        Podgląd
+      </button>
 
       <button
         type="button"

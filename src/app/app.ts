@@ -6,6 +6,7 @@ import {
 
 import { AuthService } from './services/auth.service';
 import { Toast } from './components/common/toast/toast';
+import { ToastService } from './services/toast.service';
 
 
 @Component({
@@ -20,7 +21,8 @@ import { Toast } from './components/common/toast/toast';
 export class App {
   constructor(
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly toastService: ToastService
   ) {}
   get isLoginPage(): boolean {
     return this.router.url === '/login';
@@ -32,6 +34,9 @@ export class App {
       },
       error: (error) => {
         console.error('Logout failed', error);
+        this.toastService.error(
+          'Nie udało się wylogować. Spróbuj ponownie.'
+        );
       },
     });
   }

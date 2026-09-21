@@ -1,77 +1,130 @@
 <app-section-wrapper>
-  <app-section-header text="Panel administracyjny"></app-section-header>
+  <app-section-header
+    text="Panel administracyjny"
+  ></app-section-header>
 
   <main class="dashboard">
     <div class="dashboard__header">
       <div>
         <h2>Wszystkie artykuły</h2>
-        <p>Zarządzaj artykułami opublikowanymi na blogu.</p>
+
+        <p>
+          Zarządzaj artykułami opublikowanymi
+          na blogu.
+        </p>
       </div>
 
       <span class="dashboard__counter">
         {{ articles().length }}
-        {{ articles().length === 1 ? 'artykuł' : 'artykułów' }}
+        {{
+          articles().length === 1
+            ? 'artykuł'
+            : 'artykułów'
+        }}
       </span>
     </div>
 
-    <div class="articles">
-      @for (article of articles(); track article.id) {
-        <article class="article-card">
-          <div class="article-card__image">
-            <img
-              [src]="getImageUrl(article.image)"
-              [alt]="article.name"
-            />
-          </div>
+    @if (isLoading()) {
+      <div class="dashboard__loading">
+        <app-spinner />
 
-          <div class="article-card__content">
-            <p class="article-card__date">
-              {{ article.publicationDate | date:'d MMMM y':'':'pl' }}
+        <p>Ładowanie artykułów...</p>
+      </div>
+    } @else {
+      <div class="articles">
+        @for (
+          article of articles();
+          track article.id
+        ) {
+          <article class="article-card">
+            <div class="article-card__image">
+              <img
+                [src]="getImageUrl(article.image)"
+                [alt]="article.name"
+              />
+            </div>
+
+            <div class="article-card__content">
+              <p class="article-card__date">
+                {{
+                  article.publicationDate
+                    | date:'d MMMM y':'':'pl'
+                }}
+              </p>
+
+              <h3>
+                {{ article.name }}
+              </h3>
+
+              <p class="article-card__lead">
+                {{ article.lead }}
+              </p>
+
+              <a
+                class="article-card__link"
+                [href]="
+                  '/blog/' + article.path
+                "
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                /blog/{{ article.path }}
+              </a>
+            </div>
+
+            <div class="article-card__actions">
+              <button
+                type="button"
+                class="button button--edit"
+                [routerLink]="[
+                  '/dashboard/edit',
+                  article.id
+                ]"
+                [disabled]="
+                  deletingArticleId() ===
+                  article.id
+                "
+              >
+                Edytuj
+              </button>
+
+              <button
+                type="button"
+                class="button button--delete"
+                (click)="
+                  deleteArticle(
+                    article.id,
+                    article.name
+                  )
+                "
+                [disabled]="
+                  deletingArticleId() ===
+                  article.id
+                "
+              >
+                @if (
+                  deletingArticleId() ===
+                  article.id
+                ) {
+                  Usuwanie...
+                } @else {
+                  Usuń
+                }
+              </button>
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-state">
+            <h3>Brak artykułów</h3>
+
+            <p>
+              Dodaj pierwszy artykuł do swojego
+              bloga.
             </p>
-
-            <h3>
-              {{ article.name }}
-            </h3>
-
-            <p class="article-card__lead">
-              {{ article.lead }}
-            </p>
-
-            <a
-              class="article-card__link"
-              [href]="'/blog/' + article.path"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              /blog/{{ article.path }}
-            </a>
           </div>
-
-          <div class="article-card__actions">
-            <button
-              type="button"
-              class="button button--edit"
-              [routerLink]="['/dashboard/edit', article.id]"
-            >
-              Edytuj
-            </button>
-
-            <button
-              type="button"
-              class="button button--delete"
-              (click)="deleteArticle(article.id, article.name)"
-            >
-              Usuń
-            </button>
-          </div>
-        </article>
-      } @empty {
-        <div class="empty-state">
-          <h3>Brak artykułów</h3>
-          <p>Dodaj pierwszy artykuł do swojego bloga.</p>
-        </div>
-      }
-    </div>
+        }
+      </div>
+    }
 
     <div class="dashboard__footer">
       <button

@@ -1,8 +1,11 @@
 <main class="login-page">
   <section class="login-card">
     <div class="login-panel">
-      <a class="brand" href="/" aria-label="Montroe CMS">
-    
+      <a
+        class="brand"
+        href="/"
+        aria-label="Montroe CMS"
+      >
         <span>Montroe CMS</span>
       </a>
 
@@ -18,85 +21,92 @@
           (ngSubmit)="onSubmit()"
         >
           <div class="form-field">
-            <label for="email">Email</label>
+            <label for="email">
+              Email
+            </label>
 
             <input
               id="email"
               type="email"
               formControlName="email"
-              placeholder="Enter your email"
+              placeholder="Wprowadź email"
               autocomplete="email"
+              [readonly]="isLoggingIn()"
             />
 
             @if (
               loginForm.controls.email.touched &&
-              loginForm.controls.email.hasError('required')
+              loginForm.controls.email.hasError(
+                'required'
+              )
             ) {
-              <p class="error-message">Email is required.</p>
+              <p class="error-message">
+                Email jest wymagany.
+              </p>
             }
 
             @if (
               loginForm.controls.email.touched &&
-              loginForm.controls.email.hasError('email')
+              loginForm.controls.email.hasError(
+                'email'
+              )
             ) {
               <p class="error-message">
-                Enter a valid email address.
+                Wprowadź poprawny adres email.
               </p>
             }
           </div>
 
           <div class="form-field">
-            <label for="password">Hasło</label>
+            <label for="password">
+              Hasło
+            </label>
 
             <input
               id="password"
               type="password"
               formControlName="password"
-              placeholder="Enter your password"
+              placeholder="Wprowadź hasło"
               autocomplete="current-password"
+              [readonly]="isLoggingIn()"
             />
 
             @if (
               loginForm.controls.password.touched &&
-              loginForm.controls.password.hasError('required')
+              loginForm.controls.password.hasError(
+                'required'
+              )
             ) {
-              <p class="error-message">Password is required.</p>
+              <p class="error-message">
+                Hasło jest wymagane.
+              </p>
             }
 
             @if (
               loginForm.controls.password.touched &&
-              loginForm.controls.password.hasError('minlength')
+              loginForm.controls.password.hasError(
+                'minlength'
+              )
             ) {
               <p class="error-message">
-                Password must contain at least 6 characters.
+                Hasło musi zawierać co najmniej
+                6 znaków.
               </p>
             }
           </div>
 
-          <!-- <div class="form-options">
-            <label class="remember-option">
-              <input
-                type="checkbox"
-                formControlName="rememberMe"
-              />
-
-              <span>Remember for 30 days</span>
-            </label>
-
-            <a href="/forgot-password">
-              Forgot password
-            </a>
-          </div> -->
-
-          <button class="submit-button" type="submit">
-            Zaloguj
+          <button
+            class="submit-button"
+            type="submit"
+            [disabled]="isLoggingIn()"
+          >
+            @if (isLoggingIn()) {
+              Logowanie...
+            } @else {
+              Zaloguj
+            }
           </button>
         </form>
-
-        <!-- <p class="signup-text">
-          Don’t have an account?
-          <a href="/register">Sign up</a>
-        </p> -->
       </div>
 
       <footer class="login-footer">
@@ -106,7 +116,10 @@
 
     <aside class="image-panel">
       <div class="image-placeholder">
-        <img src="logo.png" alt="Login Image" />
+        <img
+          src="logo.png"
+          alt="Montroe"
+        />
       </div>
     </aside>
   </section>

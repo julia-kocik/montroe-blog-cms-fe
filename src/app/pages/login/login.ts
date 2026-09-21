@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -20,6 +23,8 @@ import { ToastService } from '../../services/toast.service';
   styleUrl: './login.scss',
 })
 export class Login {
+  readonly isLoggingIn = signal(false);
+
   readonly loginForm = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,
@@ -47,6 +52,10 @@ export class Login {
   ) {}
 
   onSubmit(): void {
+    if (this.isLoggingIn()) {
+      return;
+    }
+
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
 
@@ -60,39 +69,52 @@ export class Login {
     const { email, password } =
       this.loginForm.getRawValue();
 
-    this.authService.login(email, password).subscribe({
-      next: () => {
-        this.toastService.success(
-          'Zalogowano pomyślnie.'
-        );
+    this.isLoggingIn.set(true);
 
-        this.router.navigate(['/dashboard']);
-      },
-
-      error: (error: HttpErrorResponse) => {
-        console.error('Login failed', error);
-
-        if (
-          error.status === 401 ||
-          error.status === 403
-        ) {
-          this.toastService.error(
-            'Nieprawidłowy e-mail lub hasło.'
+    this.authService
+      .login(email, password)
+      .subscribe({
+        next: () => {
+          this.toastService.success(
+            'Zalogowano pomyślnie.'
           );
-          return;
-        }
 
-        if (error.status === 0) {
-          this.toastService.error(
-            'Nie udało się połączyć z serwerem.'
+          this.router.navigate([
+            '/dashboard',
+          ]);
+        },
+
+        error: (
+          error: HttpErrorResponse
+        ) => {
+          this.isLoggingIn.set(false);
+
+          console.error(
+            'Login failed',
+            error
           );
-          return;
-        }
 
-        this.toastService.error(
-          'Wystąpił błąd serwera. Spróbuj ponownie.'
-        );
-      },
-    });
+          if (
+            error.status === 401 ||
+            error.status === 403
+          ) {
+            this.toastService.error(
+              'Nieprawidłowy e-mail lub hasło.'
+            );
+            return;
+          }
+
+          if (error.status === 0) {
+            this.toastService.error(
+              'Nie udało się połączyć z serwerem.'
+            );
+            return;
+          }
+
+          this.toastService.error(
+            'Wystąpił błąd serwera. Spróbuj ponownie.'
+          );
+        },
+      });
   }
 }

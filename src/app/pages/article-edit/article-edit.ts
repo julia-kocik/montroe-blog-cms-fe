@@ -1,10 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   ActivatedRoute,
   Router,
   RouterLink,
 } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import {
   Article,
@@ -12,11 +17,13 @@ import {
   ArticleSummaryItem,
   ArticleTableOfContentItem,
 } from '../../models/article.model';
+
 import { ArticleService } from '../../services/article';
 import { FileService } from '../../services/file';
 import { ImageService } from '../../services/image';
 import { ToastService } from '../../services/toast.service';
-import { HttpErrorResponse } from '@angular/common/http';
+
+import { Spinner } from '../../components/common/spinner/spinner';
 
 @Component({
   selector: 'app-article-edit',
@@ -24,6 +31,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   imports: [
     FormsModule,
     RouterLink,
+    Spinner,
   ],
   templateUrl: './article-edit.html',
   styleUrl: './article-edit.scss',
@@ -31,15 +39,24 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class ArticleEdit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly articleService = inject(ArticleService);
-  private readonly fileService = inject(FileService);
-  private readonly imageService = inject(ImageService);
-  private readonly toastService = inject(ToastService);
+
+  private readonly articleService =
+    inject(ArticleService);
+
+  private readonly fileService =
+    inject(FileService);
+
+  private readonly imageService =
+    inject(ImageService);
+
+  private readonly toastService =
+    inject(ToastService);
 
   readonly articleId =
     this.route.snapshot.paramMap.get('id');
 
-  readonly isNewArticle = this.articleId === null;
+  readonly isNewArticle =
+    this.articleId === null;
 
   readonly article = signal<Article>({
     id: crypto.randomUUID(),
@@ -53,53 +70,63 @@ export class ArticleEdit {
     sections: [],
   });
 
-  readonly isUploadingMainImage = signal(false);
-
-  readonly uploadingSectionImages = signal<Set<string>>(
-    new Set()
+  readonly isLoading = signal(
+    !this.isNewArticle
   );
 
-  readonly uploadedImageKeys = signal<Set<string>>(
-    new Set()
-  );
+  readonly isSaving = signal(false);
+
+  readonly isUploadingMainImage =
+    signal(false);
+
+  readonly uploadingSectionImages =
+    signal<Set<string>>(new Set());
+
+  readonly uploadedImageKeys =
+    signal<Set<string>>(new Set());
 
   constructor() {
-  if (this.articleId) {
-    this.articleService
-      .getArticleById(this.articleId)
-      .subscribe({
-        next: (article) => {
-          this.article.set(article);
-        },
-        error: (error) => {
-          console.error(
-            'Failed to load article',
-            error
-          );
+    if (this.articleId) {
+      this.articleService
+        .getArticleById(this.articleId)
+        .subscribe({
+          next: (article) => {
+            this.article.set(article);
+            this.isLoading.set(false);
+          },
+          error: (error) => {
+            this.isLoading.set(false);
 
-          if (error.status === 404) {
-            this.toastService.error(
-              'Nie znaleziono artykułu.'
+            console.error(
+              'Failed to load article',
+              error
             );
 
-            this.router.navigate(['/dashboard']);
-            return;
-          }
+            if (error.status === 404) {
+              this.toastService.error(
+                'Nie znaleziono artykułu.'
+              );
 
-          if (error.status === 0) {
+              this.router.navigate([
+                '/dashboard',
+              ]);
+              return;
+            }
+
+            if (error.status === 0) {
+              this.toastService.error(
+                'Nie udało się połączyć z serwerem.'
+              );
+              return;
+            }
+
             this.toastService.error(
-              'Nie udało się połączyć z serwerem.'
+              'Nie udało się wczytać artykułu.'
             );
-            return;
-          }
-
-          this.toastService.error(
-            'Nie udało się wczytać artykułu.'
-          );
-        },
-      });
+          },
+        });
+    }
   }
-}
 
   saveArticle(): void {
     if (
@@ -109,6 +136,10 @@ export class ArticleEdit {
       this.toastService.warning(
         'Poczekaj na zakończenie wysyłania obrazów.'
       );
+      return;
+    }
+
+    if (this.isSaving()) {
       return;
     }
 
@@ -128,7 +159,9 @@ export class ArticleEdit {
       return;
     }
 
-    if (articleToSave.summaryItems.length === 0) {
+    if (
+      articleToSave.summaryItems.length === 0
+    ) {
       this.toastService.warning(
         'Dodaj przynajmniej jeden punkt podsumowania.'
       );
@@ -147,7 +180,8 @@ export class ArticleEdit {
     }
 
     if (
-      articleToSave.tableOfContentItems.length === 0
+      articleToSave.tableOfContentItems
+        .length === 0
     ) {
       this.toastService.warning(
         'Dodaj przynajmniej jedną pozycję spisu treści.'
@@ -166,7 +200,9 @@ export class ArticleEdit {
       return;
     }
 
-    if (articleToSave.sections.length === 0) {
+    if (
+      articleToSave.sections.length === 0
+    ) {
       this.toastService.warning(
         'Dodaj przynajmniej jedną sekcję artykułu.'
       );
@@ -175,7 +211,8 @@ export class ArticleEdit {
 
     if (
       articleToSave.sections.some(
-        (section) => !section.subHeading.trim()
+        (section) =>
+          !section.subHeading.trim()
       )
     ) {
       this.toastService.warning(
@@ -186,7 +223,8 @@ export class ArticleEdit {
 
     if (
       articleToSave.sections.some(
-        (section) => !section.paragraph.trim()
+        (section) =>
+          !section.paragraph.trim()
       )
     ) {
       this.toastService.warning(
@@ -194,6 +232,8 @@ export class ArticleEdit {
       );
       return;
     }
+
+    this.isSaving.set(true);
 
     if (this.isNewArticle) {
       this.articleService
@@ -206,9 +246,13 @@ export class ArticleEdit {
               'Artykuł został utworzony.'
             );
 
-            this.router.navigate(['/dashboard']);
+            this.router.navigate([
+              '/dashboard',
+            ]);
           },
           error: (error) => {
+            this.isSaving.set(false);
+
             console.error(
               'Failed to create article',
               error
@@ -240,9 +284,13 @@ export class ArticleEdit {
             'Zmiany zostały zapisane.'
           );
 
-          this.router.navigate(['/dashboard']);
+          this.router.navigate([
+            '/dashboard',
+          ]);
         },
         error: (error) => {
+          this.isSaving.set(false);
+
           console.error(
             'Failed to update article',
             error
@@ -283,15 +331,16 @@ export class ArticleEdit {
   ): void {
     this.article.update((current) => ({
       ...current,
-      summaryItems: current.summaryItems.map(
-        (item) =>
-          item.id === id
-            ? {
-                ...item,
-                name,
-              }
-            : item
-      ),
+      summaryItems:
+        current.summaryItems.map(
+          (item) =>
+            item.id === id
+              ? {
+                  ...item,
+                  name,
+                }
+              : item
+        ),
     }));
   }
 
@@ -299,7 +348,8 @@ export class ArticleEdit {
     event: Event,
     image: string
   ): void {
-    const img = event.target as HTMLImageElement;
+    const img =
+      event.target as HTMLImageElement;
 
     if (img.src.endsWith('.png')) {
       img.src = `/${image}.jpg`;
@@ -317,11 +367,12 @@ export class ArticleEdit {
   }
 
   addContentItem(): void {
-    const newItem: ArticleTableOfContentItem = {
-      id: crypto.randomUUID(),
-      name: '',
-      link: '',
-    };
+    const newItem: ArticleTableOfContentItem =
+      {
+        id: crypto.randomUUID(),
+        name: '',
+        link: '',
+      };
 
     this.article.update((current) => ({
       ...current,
@@ -393,15 +444,16 @@ export class ArticleEdit {
   ): void {
     this.article.update((current) => ({
       ...current,
-      sections: current.sections.map(
-        (section) =>
-          section.id === id
-            ? {
-                ...section,
-                [field]: value,
-              }
-            : section
-      ),
+      sections:
+        current.sections.map(
+          (section) =>
+            section.id === id
+              ? {
+                  ...section,
+                  [field]: value,
+                }
+              : section
+        ),
     }));
   }
 
@@ -416,9 +468,10 @@ export class ArticleEdit {
 
     this.article.update((current) => ({
       ...current,
-      sections: current.sections.filter(
-        (section) => section.id !== id
-      ),
+      sections:
+        current.sections.filter(
+          (section) => section.id !== id
+        ),
     }));
   }
 
@@ -428,7 +481,9 @@ export class ArticleEdit {
     }
 
     this.article.update((current) => {
-      const sections = [...current.sections];
+      const sections = [
+        ...current.sections,
+      ];
 
       [
         sections[index - 1],
@@ -454,7 +509,9 @@ export class ArticleEdit {
     }
 
     this.article.update((current) => {
-      const sections = [...current.sections];
+      const sections = [
+        ...current.sections,
+      ];
 
       [
         sections[index],
@@ -483,33 +540,50 @@ export class ArticleEdit {
 
     this.isUploadingMainImage.set(true);
 
-    this.fileService.uploadImage(file).subscribe({
-      next: (response) => {
-        this.trackUploadedImage(response.key);
+    this.fileService
+      .uploadImage(file)
+      .subscribe({
+        next: (response) => {
+          this.trackUploadedImage(
+            response.key
+          );
 
-        this.article.update((current) => ({
-          ...current,
-          image: response.key,
-        }));
+          this.article.update(
+            (current) => ({
+              ...current,
+              image: response.key,
+            })
+          );
 
-        this.isUploadingMainImage.set(false);
-      },
-      error: (error) => {
-        console.error(
-          'Failed to upload main image',
-          error
-        );
+          this.isUploadingMainImage.set(
+            false
+          );
+        },
+        error: (
+          error: HttpErrorResponse
+        ) => {
+          console.error(
+            'Failed to upload main image',
+            error
+          );
 
-        this.handleImageUploadError(error);
-        this.isUploadingMainImage.set(false);
-      },
-    });
+          this.handleImageUploadError(
+            error
+          );
+
+          this.isUploadingMainImage.set(
+            false
+          );
+        },
+      });
   }
 
   uploadSectionImage(
     event: Event,
     sectionId: string,
-    field: 'imageLarge' | 'imageSmall'
+    field:
+      | 'imageLarge'
+      | 'imageSmall'
   ): void {
     const input =
       event.target as HTMLInputElement;
@@ -520,47 +594,62 @@ export class ArticleEdit {
       return;
     }
 
-    const uploadKey = `${sectionId}-${field}`;
+    const uploadKey =
+      `${sectionId}-${field}`;
 
     this.uploadingSectionImages.update(
       (current) => {
-        const updated = new Set(current);
+        const updated =
+          new Set(current);
+
         updated.add(uploadKey);
+
         return updated;
       }
     );
 
-    this.fileService.uploadImage(file).subscribe({
-      next: (response) => {
-        this.trackUploadedImage(response.key);
+    this.fileService
+      .uploadImage(file)
+      .subscribe({
+        next: (response) => {
+          this.trackUploadedImage(
+            response.key
+          );
 
-        this.updateSection(
-          sectionId,
-          field,
-          response.key
-        );
+          this.updateSection(
+            sectionId,
+            field,
+            response.key
+          );
 
-        this.finishSectionImageUpload(
-          uploadKey
-        );
-      },
-      error: (error) => {
-        console.error(
-          'Failed to upload section image',
-          error
-        );
+          this.finishSectionImageUpload(
+            uploadKey
+          );
+        },
+        error: (
+          error: HttpErrorResponse
+        ) => {
+          console.error(
+            'Failed to upload section image',
+            error
+          );
 
-        this.handleImageUploadError(error);
-        this.finishSectionImageUpload(
-          uploadKey
-        );
-      },
-    });
+          this.handleImageUploadError(
+            error
+          );
+
+          this.finishSectionImageUpload(
+            uploadKey
+          );
+        },
+      });
   }
 
   isSectionImageUploading(
     sectionId: string,
-    field: 'imageLarge' | 'imageSmall'
+    field:
+      | 'imageLarge'
+      | 'imageSmall'
   ): boolean {
     return this.uploadingSectionImages().has(
       `${sectionId}-${field}`
@@ -572,15 +661,20 @@ export class ArticleEdit {
   ): void {
     this.uploadingSectionImages.update(
       (current) => {
-        const updated = new Set(current);
+        const updated =
+          new Set(current);
+
         updated.delete(uploadKey);
+
         return updated;
       }
     );
   }
 
   getImageUrl(image: string): string {
-    return this.imageService.getUrl(image);
+    return this.imageService.getUrl(
+      image
+    );
   }
 
   previewArticle(): void {
@@ -601,8 +695,11 @@ export class ArticleEdit {
   ): void {
     this.uploadedImageKeys.update(
       (current) => {
-        const updated = new Set(current);
+        const updated =
+          new Set(current);
+
         updated.add(key);
+
         return updated;
       }
     );
@@ -614,37 +711,41 @@ export class ArticleEdit {
     ];
 
     if (keys.length === 0) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate([
+        '/dashboard',
+      ]);
       return;
     }
 
     let completed = 0;
 
     keys.forEach((key) => {
-      this.fileService.deleteImage(key).subscribe({
-        next: () => {
-          completed++;
+      this.fileService
+        .deleteImage(key)
+        .subscribe({
+          next: () => {
+            completed++;
 
-          this.finishCancelCleanup(
-            completed,
-            keys.length
-          );
-        },
-        error: (error) => {
-          console.error(
-            'Failed to delete unused image',
-            key,
-            error
-          );
+            this.finishCancelCleanup(
+              completed,
+              keys.length
+            );
+          },
+          error: (error) => {
+            console.error(
+              'Failed to delete unused image',
+              key,
+              error
+            );
 
-          completed++;
+            completed++;
 
-          this.finishCancelCleanup(
-            completed,
-            keys.length
-          );
-        },
-      });
+            this.finishCancelCleanup(
+              completed,
+              keys.length
+            );
+          },
+        });
     });
   }
 
@@ -657,7 +758,9 @@ export class ArticleEdit {
         new Set()
       );
 
-      this.router.navigate(['/dashboard']);
+      this.router.navigate([
+        '/dashboard',
+      ]);
     }
   }
 
@@ -670,15 +773,17 @@ export class ArticleEdit {
       keys.add(article.image);
     }
 
-    article.sections.forEach((section) => {
-      if (section.imageLarge) {
-        keys.add(section.imageLarge);
-      }
+    article.sections.forEach(
+      (section) => {
+        if (section.imageLarge) {
+          keys.add(section.imageLarge);
+        }
 
-      if (section.imageSmall) {
-        keys.add(section.imageSmall);
+        if (section.imageSmall) {
+          keys.add(section.imageSmall);
+        }
       }
-    });
+    );
 
     return keys;
   }
@@ -694,15 +799,17 @@ export class ArticleEdit {
     );
 
     unusedImageKeys.forEach((key) => {
-      this.fileService.deleteImage(key).subscribe({
-        error: (error) => {
-          console.error(
-            'Failed to delete unused image',
-            key,
-            error
-          );
-        },
-      });
+      this.fileService
+        .deleteImage(key)
+        .subscribe({
+          error: (error) => {
+            console.error(
+              'Failed to delete unused image',
+              key,
+              error
+            );
+          },
+        });
     });
 
     this.uploadedImageKeys.set(
@@ -711,33 +818,36 @@ export class ArticleEdit {
   }
 
   private handleImageUploadError(
-  error: HttpErrorResponse
-    ): void {
-      console.error('Image upload failed', error);
+    error: HttpErrorResponse
+  ): void {
+    console.error(
+      'Image upload failed',
+      error
+    );
 
-      if (error.status === 0) {
-        this.toastService.error(
-          'Nie udało się połączyć z serwerem.'
-        );
-        return;
-      }
-
-      if (error.status === 400) {
-        this.toastService.error(
-          'Nieprawidłowy format, zawartość lub rozmiar obrazu.'
-        );
-        return;
-      }
-
-      if (error.status === 413) {
-        this.toastService.error(
-          'Obraz jest za duży. Maksymalny rozmiar to 5 MB.'
-        );
-        return;
-      }
-
+    if (error.status === 0) {
       this.toastService.error(
-        'Nie udało się przesłać obrazu. Spróbuj ponownie.'
+        'Nie udało się połączyć z serwerem.'
       );
+      return;
     }
+
+    if (error.status === 400) {
+      this.toastService.error(
+        'Nieprawidłowy format, zawartość lub rozmiar obrazu.'
+      );
+      return;
+    }
+
+    if (error.status === 413) {
+      this.toastService.error(
+        'Obraz jest za duży. Maksymalny rozmiar to 5 MB.'
+      );
+      return;
+    }
+
+    this.toastService.error(
+      'Nie udało się przesłać obrazu. Spróbuj ponownie.'
+    );
+  }
 }

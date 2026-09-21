@@ -1,4 +1,8 @@
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
@@ -8,6 +12,7 @@ import { ToastService } from '../../services/toast.service';
 
 import { SectionWrapper } from '../../components/common/section-wrapper/section-wrapper';
 import { SectionHeader } from '../../components/common/section-header/section-header';
+import { Spinner } from '../../components/common/spinner/spinner';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +22,7 @@ import { SectionHeader } from '../../components/common/section-header/section-he
     DatePipe,
     SectionWrapper,
     SectionHeader,
+    Spinner,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -33,14 +39,22 @@ export class Dashboard {
 
   readonly articles = this.articleService.articles;
 
+  readonly isLoading = signal(true);
+
+  readonly deletingArticleId =
+    signal<string | null>(null);
+
   constructor() {
     this.loadArticles();
   }
 
   private loadArticles(): void {
+    this.isLoading.set(true);
+
     this.articleService.loadArticles().subscribe({
       next: (articles) => {
         this.articleService.articles.set(articles);
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error(
@@ -51,6 +65,8 @@ export class Dashboard {
         this.toastService.error(
           'Nie udało się pobrać artykułów.'
         );
+
+        this.isLoading.set(false);
       },
     });
   }
@@ -71,6 +87,8 @@ export class Dashboard {
       return;
     }
 
+    this.deletingArticleId.set(id);
+
     this.articleService.deleteArticle(id).subscribe({
       next: () => {
         this.articleService.articles.update(
@@ -79,6 +97,8 @@ export class Dashboard {
               (article) => article.id !== id
             )
         );
+
+        this.deletingArticleId.set(null);
 
         this.toastService.success(
           'Artykuł został usunięty.'
@@ -89,6 +109,8 @@ export class Dashboard {
           'Failed to delete article',
           error
         );
+
+        this.deletingArticleId.set(null);
 
         this.toastService.error(
           'Nie udało się usunąć artykułu.'

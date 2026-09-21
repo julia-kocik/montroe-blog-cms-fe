@@ -54,6 +54,10 @@ readonly uploadingSectionImages = signal<Set<string>>(
   new Set()
 );
 
+readonly uploadedImageKeys = signal<Set<string>>(
+  new Set()
+);
+
 constructor() {
   if (this.articleId) {
     this.articleService.getArticleById(this.articleId).subscribe({
@@ -85,6 +89,7 @@ constructor() {
     if (this.isNewArticle) {
       this.articleService.addArticle(articleToSave).subscribe({
         next: () => {
+          this.cleanupUnusedUploadedImages();
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {
@@ -97,6 +102,7 @@ constructor() {
 
     this.articleService.updateArticle(articleToSave).subscribe({
       next: () => {
+        this.cleanupUnusedUploadedImages();
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
@@ -309,34 +315,36 @@ constructor() {
   }
 
   uploadMainImage(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
 
-  if (!file) {
-    return;
+    if (!file) {
+      return;
+    }
+
+    this.isUploadingMainImage.set(true);
+
+    this.fileService.uploadImage(file).subscribe({
+      next: (response) => {
+        this.trackUploadedImage(response.key);
+
+        this.article.update((current) => ({
+          ...current,
+          image: response.key,
+        }));
+
+        this.isUploadingMainImage.set(false);
+      },
+      error: (error) => {
+        console.error(
+          'Failed to upload main image',
+          error
+        );
+
+        this.isUploadingMainImage.set(false);
+      },
+    });
   }
-
-  this.isUploadingMainImage.set(true);
-
-  this.fileService.uploadImage(file).subscribe({
-    next: (response) => {
-      this.article.update((current) => ({
-        ...current,
-        image: response.key,
-      }));
-
-      this.isUploadingMainImage.set(false);
-    },
-    error: (error) => {
-      console.error(
-        'Failed to upload main image',
-        error
-      );
-
-      this.isUploadingMainImage.set(false);
-    },
-  });
-}
   uploadSectionImage(
     event: Event,
     sectionId: string,
@@ -359,6 +367,8 @@ constructor() {
 
     this.fileService.uploadImage(file).subscribe({
       next: (response) => {
+        this.trackUploadedImage(response.key);
+
         this.updateSection(
           sectionId,
           field,
@@ -412,5 +422,105 @@ constructor() {
       '_blank',
       'noopener,noreferrer'
     );
+  }
+
+  private trackUploadedImage(key: string): void {
+    this.uploadedImageKeys.update((current) => {
+      const updated = new Set(current);
+      updated.add(key);
+      return updated;
+    });
+  }
+
+  cancelEdit(): void {
+    const keys = [...this.uploadedImageKeys()];
+
+    if (keys.length === 0) {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+
+    let completed = 0;
+
+    keys.forEach((key) => {
+      this.fileService.deleteImage(key).subscribe({
+        next: () => {
+          completed++;
+          this.finishCancelCleanup(
+            completed,
+            keys.length
+          );
+        },
+        error: (error) => {
+          console.error(
+            'Failed to delete unused image',
+            key,
+            error
+          );
+
+          completed++;
+          this.finishCancelCleanup(
+            completed,
+            keys.length
+          );
+        },
+      });
+    });
+  }
+
+  private finishCancelCleanup(
+    completed: number,
+    total: number
+  ): void {
+    if (completed === total) {
+      this.uploadedImageKeys.set(new Set());
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  private getUsedImageKeys(): Set<string> {
+  const article = this.article();
+
+  const keys = new Set<string>();
+
+  if (article.image) {
+    keys.add(article.image);
+  }
+
+  article.sections.forEach((section) => {
+      if (section.imageLarge) {
+        keys.add(section.imageLarge);
+      }
+
+      if (section.imageSmall) {
+        keys.add(section.imageSmall);
+      }
+    });
+
+    return keys;
+  }
+
+  private cleanupUnusedUploadedImages(): void {
+  const usedImageKeys = this.getUsedImageKeys();
+
+  const unusedImageKeys = [
+    ...this.uploadedImageKeys(),
+  ].filter(
+    (key) => !usedImageKeys.has(key)
+  );
+
+  unusedImageKeys.forEach((key) => {
+      this.fileService.deleteImage(key).subscribe({
+        error: (error) => {
+          console.error(
+            'Failed to delete unused image',
+            key,
+            error
+          );
+        },
+      });
+    });
+
+    this.uploadedImageKeys.set(new Set());
   }
 }

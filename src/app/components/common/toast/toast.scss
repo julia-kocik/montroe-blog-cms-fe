@@ -1,0 +1,71 @@
+:host {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  min-width: 320px;
+  max-width: 600px;
+  padding: 14px 18px;
+
+  border: 1px solid;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  box-shadow: 0 4px 16px
+    rgba(0, 0, 0, 0.15);
+
+  &--success {
+    color: #166534;
+    border-color: #86efac;
+    background: #f0fdf4;
+  }
+
+  &--error {
+    color: #991b1b;
+    border-color: #fca5a5;
+    background: #fef2f2;
+  }
+
+  &--warning {
+    color: #854d0e;
+    border-color: #fde047;
+    background: #fefce8;
+  }
+
+  &__close {
+    margin-left: auto;
+
+    border: 0;
+    background: transparent;
+
+    color: inherit;
+    font-size: 20px;
+    line-height: 1;
+
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 600px) {
+  :host {
+    top: 16px;
+    width: calc(100% - 32px);
+  }
+
+  .toast {
+    min-width: 0;
+    width: 100%;
+  }
+}

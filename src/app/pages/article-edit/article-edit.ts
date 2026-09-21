@@ -15,6 +15,8 @@ import {
 import { ArticleService } from '../../services/article';
 import { FileService } from '../../services/file';
 import { ImageService } from '../../services/image';
+import { ToastService } from '../../services/toast.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-article-edit',
@@ -31,43 +33,71 @@ export class ArticleEdit {
   private readonly router = inject(Router);
   private readonly articleService = inject(ArticleService);
   private readonly fileService = inject(FileService);
+  private readonly imageService = inject(ImageService);
+  private readonly toastService = inject(ToastService);
+
   readonly articleId =
     this.route.snapshot.paramMap.get('id');
 
   readonly isNewArticle = this.articleId === null;
 
-  private readonly imageService = inject(ImageService);
   readonly article = signal<Article>({
-  id: crypto.randomUUID(),
-  publicationDate: '',
-  name: '',
-  image: '',
-  path: '',
-  lead: '',
-  summaryItems: [],
-  tableOfContentItems: [],
-  sections: [],
-});
+    id: crypto.randomUUID(),
+    publicationDate: '',
+    name: '',
+    image: '',
+    path: '',
+    lead: '',
+    summaryItems: [],
+    tableOfContentItems: [],
+    sections: [],
+  });
 
-readonly isUploadingMainImage = signal(false);
-readonly uploadingSectionImages = signal<Set<string>>(
-  new Set()
-);
+  readonly isUploadingMainImage = signal(false);
 
-readonly uploadedImageKeys = signal<Set<string>>(
-  new Set()
-);
+  readonly uploadingSectionImages = signal<Set<string>>(
+    new Set()
+  );
 
-constructor() {
+  readonly uploadedImageKeys = signal<Set<string>>(
+    new Set()
+  );
+
+  constructor() {
   if (this.articleId) {
-    this.articleService.getArticleById(this.articleId).subscribe({
-      next: (article) => {
-        this.article.set(article);
-      },
-      error: (error) => {
-        console.error('Failed to load article', error);
-      },
-    });
+    this.articleService
+      .getArticleById(this.articleId)
+      .subscribe({
+        next: (article) => {
+          this.article.set(article);
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load article',
+            error
+          );
+
+          if (error.status === 404) {
+            this.toastService.error(
+              'Nie znaleziono artykułu.'
+            );
+
+            this.router.navigate(['/dashboard']);
+            return;
+          }
+
+          if (error.status === 0) {
+            this.toastService.error(
+              'Nie udało się połączyć z serwerem.'
+            );
+            return;
+          }
+
+          this.toastService.error(
+            'Nie udało się wczytać artykułu.'
+          );
+        },
+      });
   }
 }
 
@@ -76,39 +106,160 @@ constructor() {
       this.isUploadingMainImage() ||
       this.uploadingSectionImages().size > 0
     ) {
-      alert('Poczekaj na zakończenie wysyłania obrazów.');
+      this.toastService.warning(
+        'Poczekaj na zakończenie wysyłania obrazów.'
+      );
       return;
     }
+
     const articleToSave = this.article();
 
     if (!articleToSave.name.trim()) {
-      alert('Uzupełnij tytuł artykułu.');
+      this.toastService.warning(
+        'Uzupełnij tytuł artykułu.'
+      );
+      return;
+    }
+
+    if (!articleToSave.lead.trim()) {
+      this.toastService.warning(
+        'Uzupełnij lead artykułu.'
+      );
+      return;
+    }
+
+    if (articleToSave.summaryItems.length === 0) {
+      this.toastService.warning(
+        'Dodaj przynajmniej jeden punkt podsumowania.'
+      );
+      return;
+    }
+
+    if (
+      articleToSave.summaryItems.some(
+        (item) => !item.name.trim()
+      )
+    ) {
+      this.toastService.warning(
+        'Uzupełnij wszystkie punkty podsumowania.'
+      );
+      return;
+    }
+
+    if (
+      articleToSave.tableOfContentItems.length === 0
+    ) {
+      this.toastService.warning(
+        'Dodaj przynajmniej jedną pozycję spisu treści.'
+      );
+      return;
+    }
+
+    if (
+      articleToSave.tableOfContentItems.some(
+        (item) => !item.name.trim()
+      )
+    ) {
+      this.toastService.warning(
+        'Uzupełnij wszystkie pozycje spisu treści.'
+      );
+      return;
+    }
+
+    if (articleToSave.sections.length === 0) {
+      this.toastService.warning(
+        'Dodaj przynajmniej jedną sekcję artykułu.'
+      );
+      return;
+    }
+
+    if (
+      articleToSave.sections.some(
+        (section) => !section.subHeading.trim()
+      )
+    ) {
+      this.toastService.warning(
+        'Uzupełnij nagłówki wszystkich sekcji.'
+      );
+      return;
+    }
+
+    if (
+      articleToSave.sections.some(
+        (section) => !section.paragraph.trim()
+      )
+    ) {
+      this.toastService.warning(
+        'Uzupełnij treść wszystkich sekcji.'
+      );
       return;
     }
 
     if (this.isNewArticle) {
-      this.articleService.addArticle(articleToSave).subscribe({
-        next: () => {
-          this.cleanupUnusedUploadedImages();
-          this.router.navigate(['/dashboard']);
-        },
-        error: (error) => {
-          console.error('Failed to create article', error);
-        },
-      });
+      this.articleService
+        .addArticle(articleToSave)
+        .subscribe({
+          next: () => {
+            this.cleanupUnusedUploadedImages();
+
+            this.toastService.success(
+              'Artykuł został utworzony.'
+            );
+
+            this.router.navigate(['/dashboard']);
+          },
+          error: (error) => {
+            console.error(
+              'Failed to create article',
+              error
+            );
+
+            if (error.status === 409) {
+              this.toastService.error(
+                'Artykuł o takim adresie już istnieje.'
+              );
+              return;
+            }
+
+            this.toastService.error(
+              'Nie udało się utworzyć artykułu.'
+            );
+          },
+        });
 
       return;
     }
 
-    this.articleService.updateArticle(articleToSave).subscribe({
-      next: () => {
-        this.cleanupUnusedUploadedImages();
-        this.router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        console.error('Failed to update article', error);
-      },
-    });
+    this.articleService
+      .updateArticle(articleToSave)
+      .subscribe({
+        next: () => {
+          this.cleanupUnusedUploadedImages();
+
+          this.toastService.success(
+            'Zmiany zostały zapisane.'
+          );
+
+          this.router.navigate(['/dashboard']);
+        },
+        error: (error) => {
+          console.error(
+            'Failed to update article',
+            error
+          );
+
+          if (error.status === 409) {
+            this.toastService.error(
+              'Artykuł o takim adresie już istnieje.'
+            );
+            return;
+          }
+
+          this.toastService.error(
+            'Nie udało się zapisać zmian.'
+          );
+        },
+      });
   }
 
   addSummaryItem(): void {
@@ -144,8 +295,10 @@ constructor() {
     }));
   }
 
-
-  useJpgFallback(event: Event, image: string): void {
+  useJpgFallback(
+    event: Event,
+    image: string
+  ): void {
     const img = event.target as HTMLImageElement;
 
     if (img.src.endsWith('.png')) {
@@ -156,9 +309,10 @@ constructor() {
   removeSummaryItem(id: string): void {
     this.article.update((current) => ({
       ...current,
-      summaryItems: current.summaryItems.filter(
-        (item) => item.id !== id
-      ),
+      summaryItems:
+        current.summaryItems.filter(
+          (item) => item.id !== id
+        ),
     }));
   }
 
@@ -292,7 +446,10 @@ constructor() {
   }
 
   moveSectionDown(index: number): void {
-    if (index >= this.article().sections.length - 1) {
+    if (
+      index >=
+      this.article().sections.length - 1
+    ) {
       return;
     }
 
@@ -315,7 +472,9 @@ constructor() {
   }
 
   uploadMainImage(event: Event): void {
-    const input = event.target as HTMLInputElement;
+    const input =
+      event.target as HTMLInputElement;
+
     const file = input.files?.[0];
 
     if (!file) {
@@ -341,16 +500,20 @@ constructor() {
           error
         );
 
+        this.handleImageUploadError(error);
         this.isUploadingMainImage.set(false);
       },
     });
   }
+
   uploadSectionImage(
     event: Event,
     sectionId: string,
     field: 'imageLarge' | 'imageSmall'
   ): void {
-    const input = event.target as HTMLInputElement;
+    const input =
+      event.target as HTMLInputElement;
+
     const file = input.files?.[0];
 
     if (!file) {
@@ -359,11 +522,13 @@ constructor() {
 
     const uploadKey = `${sectionId}-${field}`;
 
-    this.uploadingSectionImages.update((current) => {
-      const updated = new Set(current);
-      updated.add(uploadKey);
-      return updated;
-    });
+    this.uploadingSectionImages.update(
+      (current) => {
+        const updated = new Set(current);
+        updated.add(uploadKey);
+        return updated;
+      }
+    );
 
     this.fileService.uploadImage(file).subscribe({
       next: (response) => {
@@ -375,7 +540,9 @@ constructor() {
           response.key
         );
 
-        this.finishSectionImageUpload(uploadKey);
+        this.finishSectionImageUpload(
+          uploadKey
+        );
       },
       error: (error) => {
         console.error(
@@ -383,7 +550,10 @@ constructor() {
           error
         );
 
-        this.finishSectionImageUpload(uploadKey);
+        this.handleImageUploadError(error);
+        this.finishSectionImageUpload(
+          uploadKey
+        );
       },
     });
   }
@@ -400,11 +570,13 @@ constructor() {
   private finishSectionImageUpload(
     uploadKey: string
   ): void {
-    this.uploadingSectionImages.update((current) => {
-      const updated = new Set(current);
-      updated.delete(uploadKey);
-      return updated;
-    });
+    this.uploadingSectionImages.update(
+      (current) => {
+        const updated = new Set(current);
+        updated.delete(uploadKey);
+        return updated;
+      }
+    );
   }
 
   getImageUrl(image: string): string {
@@ -424,16 +596,22 @@ constructor() {
     );
   }
 
-  private trackUploadedImage(key: string): void {
-    this.uploadedImageKeys.update((current) => {
-      const updated = new Set(current);
-      updated.add(key);
-      return updated;
-    });
+  private trackUploadedImage(
+    key: string
+  ): void {
+    this.uploadedImageKeys.update(
+      (current) => {
+        const updated = new Set(current);
+        updated.add(key);
+        return updated;
+      }
+    );
   }
 
   cancelEdit(): void {
-    const keys = [...this.uploadedImageKeys()];
+    const keys = [
+      ...this.uploadedImageKeys(),
+    ];
 
     if (keys.length === 0) {
       this.router.navigate(['/dashboard']);
@@ -446,6 +624,7 @@ constructor() {
       this.fileService.deleteImage(key).subscribe({
         next: () => {
           completed++;
+
           this.finishCancelCleanup(
             completed,
             keys.length
@@ -459,6 +638,7 @@ constructor() {
           );
 
           completed++;
+
           this.finishCancelCleanup(
             completed,
             keys.length
@@ -473,21 +653,24 @@ constructor() {
     total: number
   ): void {
     if (completed === total) {
-      this.uploadedImageKeys.set(new Set());
+      this.uploadedImageKeys.set(
+        new Set()
+      );
+
       this.router.navigate(['/dashboard']);
     }
   }
 
   private getUsedImageKeys(): Set<string> {
-  const article = this.article();
+    const article = this.article();
 
-  const keys = new Set<string>();
+    const keys = new Set<string>();
 
-  if (article.image) {
-    keys.add(article.image);
-  }
+    if (article.image) {
+      keys.add(article.image);
+    }
 
-  article.sections.forEach((section) => {
+    article.sections.forEach((section) => {
       if (section.imageLarge) {
         keys.add(section.imageLarge);
       }
@@ -501,15 +684,16 @@ constructor() {
   }
 
   private cleanupUnusedUploadedImages(): void {
-  const usedImageKeys = this.getUsedImageKeys();
+    const usedImageKeys =
+      this.getUsedImageKeys();
 
-  const unusedImageKeys = [
-    ...this.uploadedImageKeys(),
-  ].filter(
-    (key) => !usedImageKeys.has(key)
-  );
+    const unusedImageKeys = [
+      ...this.uploadedImageKeys(),
+    ].filter(
+      (key) => !usedImageKeys.has(key)
+    );
 
-  unusedImageKeys.forEach((key) => {
+    unusedImageKeys.forEach((key) => {
       this.fileService.deleteImage(key).subscribe({
         error: (error) => {
           console.error(
@@ -521,6 +705,39 @@ constructor() {
       });
     });
 
-    this.uploadedImageKeys.set(new Set());
+    this.uploadedImageKeys.set(
+      new Set()
+    );
   }
+
+  private handleImageUploadError(
+  error: HttpErrorResponse
+    ): void {
+      console.error('Image upload failed', error);
+
+      if (error.status === 0) {
+        this.toastService.error(
+          'Nie udało się połączyć z serwerem.'
+        );
+        return;
+      }
+
+      if (error.status === 400) {
+        this.toastService.error(
+          'Nieprawidłowy format, zawartość lub rozmiar obrazu.'
+        );
+        return;
+      }
+
+      if (error.status === 413) {
+        this.toastService.error(
+          'Obraz jest za duży. Maksymalny rozmiar to 5 MB.'
+        );
+        return;
+      }
+
+      this.toastService.error(
+        'Nie udało się przesłać obrazu. Spróbuj ponownie.'
+      );
+    }
 }

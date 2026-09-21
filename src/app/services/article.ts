@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { ARTICLES } from '../data/articles';
 import { Article } from '../models/article.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,41 +20,15 @@ export class ArticleService {
 
   readonly articles = signal<Article[]>([]);
 
-  loadArticles(): void {
-    this.http.get<Article[]>(this.apiUrl).subscribe({
-      next: (articles) => {
-        console.log('ARTICLES FROM API:', articles);
+  loadArticles(): Observable<Article[]> {
+  return this.http.get<Article[]>(this.apiUrl);
+}
 
-        this.articles.set(articles);
-      },
-      error: (error) => {
-        console.error(
-          'Failed to load articles',
-          error
-        );
-      },
-    });
-  }
-
-  deleteArticle(id: string): void {
-    this.http
-      .delete<void>(`${this.apiUrl}/${id}`)
-      .subscribe({
-        next: () => {
-          this.articles.update((articles) =>
-            articles.filter(
-              (article) => article.id !== id
-            )
-          );
-        },
-        error: (error) => {
-          console.error(
-            'Failed to delete article',
-            error
-          );
-        },
-      });
-  }
+deleteArticle(id: string): Observable<void> {
+  return this.http.delete<void>(
+    `${this.apiUrl}/${id}`
+  );
+}
 
   getArticleById(id: string) {
     return this.http.get<Article>(

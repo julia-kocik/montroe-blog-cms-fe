@@ -20,13 +20,13 @@
     </div>
 
     <div class="article-edit__actions">
-    <button
-      type="button"
-      class="button button--preview"
-      (click)="previewArticle()"
-    >
-      Podgląd
-    </button>
+      <button
+        type="button"
+        class="button button--preview"
+        (click)="previewArticle()"
+      >
+        Podgląd
+      </button>
 
       <button
         type="button"
@@ -36,6 +36,7 @@
       >
         Zapisz
       </button>
+
       <button
         type="button"
         class="button button--cancel"
@@ -50,6 +51,10 @@
     class="article-edit__form"
     (submit)="$event.preventDefault()"
   >
+    <p class="required-info">
+      * pola wymagane
+    </p>
+
     <!-- 01 PODSTAWOWE INFORMACJE -->
     <section class="form-section">
       <div class="form-section__header">
@@ -71,7 +76,7 @@
         <label
           class="form-field form-field--full"
         >
-          <span>Tytuł</span>
+          <span>Tytuł *</span>
 
           <input
             type="text"
@@ -124,7 +129,7 @@
         <label
           class="form-field form-field--full"
         >
-          <span>Lead</span>
+          <span>Lead *</span>
 
           <textarea
             rows="6"
@@ -150,12 +155,13 @@
             02
           </span>
 
-          <h2>Najważniejsze informacje</h2>
+          <h2>Najważniejsze informacje *</h2>
         </div>
 
         <p>
           Lista punktów wyświetlana na początku
-          artykułu.
+          artykułu. Wymagany jest przynajmniej
+          jeden punkt.
         </p>
       </div>
 
@@ -171,7 +177,7 @@
             </span>
 
             <label class="form-field">
-              <span>Treść punktu</span>
+              <span>Treść punktu *</span>
 
               <textarea
                 rows="3"
@@ -202,7 +208,8 @@
             <h3>Brak punktów</h3>
 
             <p>
-              Dodaj pierwszy punkt podsumowania.
+              Dodaj przynajmniej jeden punkt
+              podsumowania.
             </p>
           </div>
         }
@@ -225,12 +232,13 @@
             03
           </span>
 
-          <h2>Spis treści</h2>
+          <h2>Spis treści *</h2>
         </div>
 
         <p>
           Odnośniki prowadzące do sekcji
-          artykułu.
+          artykułu. Wymagana jest przynajmniej
+          jedna pozycja.
         </p>
       </div>
 
@@ -247,7 +255,7 @@
 
             <div class="collection-item__fields">
               <label class="form-field">
-                <span>Nazwa pozycji</span>
+                <span>Nazwa pozycji *</span>
 
                 <input
                   type="text"
@@ -261,24 +269,6 @@
                   "
                   [name]="'content-name-' + item.id"
                   placeholder="Nazwa sekcji"
-                />
-              </label>
-
-              <label class="form-field">
-                <span>Odnośnik</span>
-
-                <input
-                  type="text"
-                  [ngModel]="item.link"
-                  (ngModelChange)="
-                    updateContentItem(
-                      item.id,
-                      'link',
-                      $event
-                    )
-                  "
-                  [name]="'content-link-' + item.id"
-                  placeholder="#slug-sekcji"
                 />
               </label>
             </div>
@@ -298,8 +288,8 @@
             <h3>Brak spisu treści</h3>
 
             <p>
-              Dodaj pierwszą pozycję spisu
-              treści.
+              Dodaj przynajmniej jedną pozycję
+              spisu treści.
             </p>
           </div>
         }
@@ -322,12 +312,13 @@
             04
           </span>
 
-          <h2>Sekcje artykułu</h2>
+          <h2>Sekcje artykułu *</h2>
         </div>
 
         <p>
-          Nagłówki, akapity i obrazy
-          właściwej treści artykułu.
+          Nagłówki, akapity i obrazy właściwej
+          treści artykułu. Wymagana jest
+          przynajmniej jedna sekcja.
         </p>
       </div>
 
@@ -399,7 +390,7 @@
               <label
                 class="form-field form-field--full"
               >
-                <span>Nagłówek sekcji</span>
+                <span>Nagłówek sekcji *</span>
 
                 <input
                   type="text"
@@ -422,7 +413,7 @@
               <label
                 class="form-field form-field--full"
               >
-                <span>Treść sekcji</span>
+                <span>Treść sekcji *</span>
 
                 <textarea
                   rows="10"
@@ -463,7 +454,9 @@
                     'imageLarge'
                   )
                 ) {
-                  <small>Wysyłanie obrazu...</small>
+                  <small>
+                    Wysyłanie obrazu...
+                  </small>
                 }
 
                 @if (
@@ -473,7 +466,9 @@
                     'imageLarge'
                   )
                 ) {
-                  <small>{{ section.imageLarge }}</small>
+                  <small>
+                    {{ section.imageLarge }}
+                  </small>
                 }
               </label>
 
@@ -498,7 +493,9 @@
                     'imageSmall'
                   )
                 ) {
-                  <small>Wysyłanie obrazu...</small>
+                  <small>
+                    Wysyłanie obrazu...
+                  </small>
                 }
 
                 @if (
@@ -508,31 +505,33 @@
                     'imageSmall'
                   )
                 ) {
-                  <small>{{ section.imageSmall }}</small>
+                  <small>
+                    {{ section.imageSmall }}
+                  </small>
                 }
               </label>
 
-             @if (section.imageLarge) {
-              <div class="section-image-preview">
-                <span>Desktop</span>
+              @if (section.imageLarge) {
+                <div class="section-image-preview">
+                  <span>Desktop</span>
 
-                <img
-                  [src]="getImageUrl(section.imageLarge)"
-                  [alt]="section.subHeading"
-                />
-              </div>
-            }
+                  <img
+                    [src]="getImageUrl(section.imageLarge)"
+                    [alt]="section.subHeading"
+                  />
+                </div>
+              }
 
-            @if (section.imageSmall) {
-              <div class="section-image-preview">
-                <span>Mobile</span>
+              @if (section.imageSmall) {
+                <div class="section-image-preview">
+                  <span>Mobile</span>
 
-                <img
-                  [src]="getImageUrl(section.imageSmall)"
-                  [alt]="section.subHeading"
-                />
-              </div>
-            }
+                  <img
+                    [src]="getImageUrl(section.imageSmall)"
+                    [alt]="section.subHeading"
+                  />
+                </div>
+              }
 
               @if (
                 section.slug ===
@@ -561,8 +560,8 @@
             <h3>Brak sekcji artykułu</h3>
 
             <p>
-              Dodaj pierwszą sekcję właściwej
-              treści.
+              Dodaj przynajmniej jedną sekcję
+              właściwej treści.
             </p>
           </div>
         }
@@ -586,7 +585,7 @@
         Anuluj
       </button>
 
-     <button
+      <button
         type="button"
         class="button button--preview"
         (click)="previewArticle()"

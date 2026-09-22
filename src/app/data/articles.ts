@@ -84,6 +84,7 @@ export const ARTICLES: Article[] = [
           'Moc bierna to energia, która krąży między urządzeniem a siecią, ale nie wykonuje użytecznej pracy. Występuje wszędzie tam, gdzie są silniki, transformatory, klimatyzatory czy urządzenia z dużymi cewkami lub kondensatorami. Dla uproszczenia – można ją porównać do „energii w obiegu”: nie napędza maszyn, ale zajmuje miejsce w sieci, przez co operatorzy muszą ją kompensować i naliczają za nią opłaty.',
         imageLarge: '/oszczednosc.png',
         imageSmall: '/oszczednosc.png',
+        mobileImageMode: 'SAME',
         slug: 'czym-jest-moc-bierna-proste-wyjasnienie',
       },
       {
@@ -93,6 +94,7 @@ export const ARTICLES: Article[] = [
           'Zakład energetyczny nalicza opłaty, gdy współczynnik mocy (tzw. cosφ) spada poniżej dopuszczalnego poziomu – najczęściej 0,9. W praktyce oznacza to, że Twoje urządzenia „zaciągają” z sieci więcej mocy biernej niż powinny. Im więcej takich urządzeń pracuje jednocześnie (np. klimatyzacja, windy, sprężarki), tym większe są straty i opłaty.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'skad-biora-sie-oplaty-za-moc-bierna-na-fakturze',
       },
       {
@@ -102,6 +104,7 @@ export const ARTICLES: Article[] = [
           'Najprostszy sposób to spojrzeć w fakturę – szukaj pozycji „energia bierna pojemnościowa” lub „energia bierna indukcyjna”. Jeśli takie wartości są większe od zera, Twoja firma ponosi dodatkowe koszty. Możesz też zlecić darmowy audyt – w ciągu jednego dnia da się określić, czy kompensacja mocy biernej przyniesie oszczędność.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'jak-sprawdzic-czy-twoja-firma-placi-za-moc-bierna',
       },
       {
@@ -111,6 +114,7 @@ export const ARTICLES: Article[] = [
           'Najskuteczniejszym rozwiązaniem jest kompensacja mocy biernej – czyli instalacja urządzenia, które „wyrównuje” przepływ energii i eliminuje opłaty. Takie urządzenie nazywa się kompensatorem mocy biernej i może działać automatycznie – dopasowując się do obciążenia w czasie rzeczywistym. W praktyce: dobrze dobrany kompensator powinien obniżyć opłaty za moc bierną niemal do zera, co sprawia, że koszt montażu zwraca się zwykle w kilka miesięcy.',
         imageLarge: '/faktura.jpg',
         imageSmall: '/faktura.jpg',
+        mobileImageMode: 'SAME',
         slug: 'jak-uniknac-oplat-za-energie-bierna',
       },
       {
@@ -120,6 +124,7 @@ export const ARTICLES: Article[] = [
           'Ceny kompensatorów zaczynają się od kilku tysięcy dla małych instalacji i mogą sięgać 20–30 tys. zł przy dużych zakładach przemysłowych. Na koszt wpływa: moc urządzenia (kvar), typ (z dławikami lub bez), jakość komponentów i system sterowania, montaż i konfiguracja.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'ile-kosztuje-montaz-kompensatora-mocy-biernej',
       },
       {
@@ -129,6 +134,7 @@ export const ARTICLES: Article[] = [
           'Jednym z najczęstszych błędów jest zakup kompensatora o zbyt małej lub zbyt dużej mocy. Zbyt słabe urządzenie nie wyeliminuje wszystkich opłat, a zbyt mocne może powodować nadkompensację i dodatkowe straty. Dlatego przed montażem zawsze warto przeprowadzić pomiar współczynnika mocy i dobrać urządzenie dokładnie do charakteru obciążenia. Każda instalacja elektryczna pracuje inaczej. Pominięcie tej analizy sprawia, że kompensator nie działa skutecznie lub szybciej się zużywa. Profesjonalny audyt przed doborem urządzenia eliminuje ten problem.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'najczestsze-bledy-przy-kompensacji-mocy-biernej-i-jak-ich-uniknac',
       },
       {
@@ -138,6 +144,7 @@ export const ARTICLES: Article[] = [
           'Firma z Warszawy (branża przemysłowa) płaciła miesięcznie ponad 800 zł opłat za energię bierną. Po zainstalowaniu kompensatora koszt spadł do zera już w pierwszym miesiącu. 💡 Dzięki temu zwrot inwestycji nastąpił po 4 miesiącach, a firma zyskała znaczną oszczędność.',
         imageLarge: '/komp-lind.jpg',
         imageSmall: '/komp-lind-sm.jpg',
+        mobileImageMode: 'SAME',
         slug: 'kompensacja-mocy-biernej-w-warszawie-lokalne-realizacje-i-korzysci',
       },
       {
@@ -147,6 +154,7 @@ export const ARTICLES: Article[] = [
           'Jeśli chcesz sprawdzić, czy Twoja firma też płaci za moc bierną – wyślij nam faktury za energię z ostatnich 6 miesięcy. Wykonamy bezpłatną analizę i pokażemy, ile możesz zaoszczędzić. Zadzwoń: 790 270 070 lub wyślij email: biuro@montroe.com.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'zamawiam-darmowy-audyt',
       },
     ],
@@ -234,6 +242,7 @@ export const ARTICLES: Article[] = [
           'Instalacje starsze niż 20–30 lat – szczególnie te wykonane z przewodów aluminiowych – nie są przystosowane do współczesnych obciążeń. W latach 80. i 90. przeciętne gospodarstwo domowe pobierało nieporównywalnie mniej mocy. Dziś standardem są: płyta indukcyjna, zmywarka, suszarka bębnowa, ogrzewanie elektryczne czy klimatyzacja. Jeśli instalacja nie nadąża za zapotrzebowaniem lub często wybija zabezpieczenia, to praktycznie pewne, że wymaga wymiany.',
         imageLarge: '/modernizacja.png',
         imageSmall: '/modernizacja.png',
+        mobileImageMode: 'SAME',
         slug: 'kiedy-instalacja-elektryczna-wymaga-modernizacji',
       },
       {
@@ -243,6 +252,7 @@ export const ARTICLES: Article[] = [
           'Stara instalacja to nie tylko niewygoda, ale przede wszystkim zagrożenie. Najpoważniejsze ryzyka to: przegrzewanie przewodów aluminiowych, iskrzenie w gniazdach, brak przewodu ochronnego (PE), przeciążenia podczas pracy kilku urządzeń naraz oraz ryzyko pożaru. Tego typu problemy wciąż są częstą przyczyną interwencji straży pożarnej w Warszawie.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'najczestsze-zagrozenia-zwiazane-ze-stara-instalacja',
       },
       {
@@ -252,6 +262,7 @@ export const ARTICLES: Article[] = [
           'Proces modernizacji przebiega w kilku etapach: 1) wstępne oględziny i pomiary, 2) przygotowanie projektu i rozmieszczenia gniazd, 3) kucie ścian i prowadzenie nowych przewodów, 4) montaż rozdzielnicy oraz zabezpieczeń różnicowoprądowych, 5) montaż gniazd i osprzętu, 6) pomiary końcowe i dokumentacja. W mieszkaniu modernizacja trwa zwykle 2–5 dni, a w domu – 5–10 dni.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'jak-przebiega-modernizacja-instalacji-elektrycznej',
       },
       {
@@ -261,6 +272,7 @@ export const ARTICLES: Article[] = [
           'Cena zależy od metrażu, liczby obwodów i standardu wykończenia. W Warszawie wymiana instalacji w mieszkaniu 40–60 m² to zazwyczaj 6–12 tys. zł. W większych mieszkaniach lub domach koszty mogą sięgać 15–30 tys. zł. Na cenę wpływa także konieczność wykonania bruzdowania, montażu nowych zabezpieczeń oraz liczba punktów elektrycznych.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'ile-kosztuje-modernizacja-instalacji-w-warszawie',
       },
       {
@@ -270,6 +282,7 @@ export const ARTICLES: Article[] = [
           'W mieszkaniu zakres prac jest zwykle prostszy, ale wymaga uzgodnień z administracją budynku oraz dopasowania do istniejącej instalacji w pionach. W domach jednorodzinnych prace są bardziej rozbudowane – często obejmują także wymianę przyłącza, rozdzielnicy głównej i doprowadzenie zasilania do pomieszczeń gospodarczych, garażu czy ogrodu.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'mieszkanie-vs-dom-modernizacja',
       },
       {
@@ -279,6 +292,7 @@ export const ARTICLES: Article[] = [
           'Najczęstsze błędy to: zbyt mała liczba obwodów, brak osobnego obwodu dla indukcji, brak RCD, zbyt mała przekrój przewodów, pozostawienie części starej instalacji aluminiowej, montaż rozdzielnicy bez certyfikowanych komponentów lub brak pomiarów powykonawczych. Każdy z tych błędów może kosztować później wielokrotnie więcej niż oszczędność na etapie prac.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'najczestsze-bledy-podczas-wymiany-instalacji',
       },
       {
@@ -288,6 +302,7 @@ export const ARTICLES: Article[] = [
           'W jednym z mieszkań na Mokotowie (blok z 1982 r.) wymieniliśmy kompletną instalację – właściciel nie mógł jednocześnie włączać pralki i piekarnika. Po modernizacji wykonaliśmy 11 obwodów, dodaliśmy RCD oraz przewody miedziane. W innym przypadku na Ursynowie modernizacja była konieczna po awarii i przepaleniu przewodów w ścianie. Dzięki wymianie instalacja jest bezpieczna, a właściciel mógł zamontować płytę indukcyjną.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'modernizacja-instalacji-elektrycznej-warszawa-realizacje',
       },
       {
@@ -297,6 +312,7 @@ export const ARTICLES: Article[] = [
           'Jeśli Twoja instalacja ma już swoje lata lub chcesz przygotować mieszkanie pod nowe urządzenia – wykonamy bezpłatną ocenę techniczną i przedstawimy rzetelną wycenę. Zadzwoń: 790 270 070 lub napisz: biuro@montroe.com.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'umow-darmowe-ogledziny',
       },
     ],
@@ -368,6 +384,7 @@ export const ARTICLES: Article[] = [
           'Ładowanie samochodu elektrycznego z gniazdka 230 V może trwać nawet ponad dobę. Wallbox o mocy 7,4–11 kW skraca ten czas kilkukrotnie i zapewnia pełne bezpieczeństwo instalacji. Dodatkowa korzyść to niższe koszty – ładowanie w domu jest nawet o 40–60% tańsze niż na publicznych stacjach ładowania w Warszawie. Własna stacja to również pełna wygoda – samochód ładuje się wtedy, kiedy nie jest potrzebny: w nocy lub podczas pracy.',
         imageLarge: '/ladowarka2.jpg',
         imageSmall: '/ladowarka2.jpg',
+        mobileImageMode: 'SAME',
         slug: 'dlaczego-warto-miec-wlasna-stacje-ladowania',
       },
       {
@@ -377,6 +394,7 @@ export const ARTICLES: Article[] = [
           'Najpopularniejsze są stacje AC (prąd zmienny) o mocy 3,6–22 kW. Wallbox 7,4 lub 11 kW to idealny wybór do domu lub garażu podziemnego. Stacje DC (ładowanie szybkie) są droższe i wymagają znacznie mocniejszej instalacji. W Warszawie montuje się je głównie przy firmach oraz obiektach komercyjnych. Wybór stacji ładowania pojazdów zależy od: mocy przyłączeniowej, rodzaju pojazdu, częstotliwości ładowania oraz możliwości technicznych budynku.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'rodzaje-stacji-ladowania-ktora-wybrac',
       },
       {
@@ -386,6 +404,7 @@ export const ARTICLES: Article[] = [
           'Proces montażu składa się z kilku kroków: 1) ocena instalacji i zabezpieczeń, 2) sprawdzenie mocy przyłączeniowej, 3) wyznaczenie trasy przewodów, 4) montaż wallboxa, 5) podłączenie do rozdzielnicy i zabezpieczeń, 6) pomiary końcowe. W domach jednorodzinnych instalacja trwa zwykle 2–4 godziny. W garażach podziemnych w Warszawie – 1–2 dni z uwagi na dłuższe trasy kablowe i konieczność uzgodnień ze wspólnotą.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'jak-wyglada-montaz-stacji-ladowania-w-warszawie',
       },
       {
@@ -395,6 +414,7 @@ export const ARTICLES: Article[] = [
           'Koszt zależy od wybranej stacji ładowania oraz zakresu prac. Wallboxy kosztują 2–3,5 tys. zł. Montaż w Warszawie to zwykle 1–2,5 tys. zł, zależnie od długości okablowania i stopnia skomplikowania instalacji. Średnio całość zamyka się w przedziale 3–6 tys. zł. W przypadku firm lub stacji DC koszt rośnie nawet do kilkudziesięciu tysięcy złotych.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'ile-kosztuje-montaz-stacji-ladowania',
       },
       {
@@ -404,6 +424,7 @@ export const ARTICLES: Article[] = [
           'W domu jednorodzinnym montaż jest prostszy – wystarczy sprawdzić możliwości instalacji, dobrać zabezpieczenia i wybrać miejsce montażu. W blokach i garażach podziemnych w Warszawie wymagane jest zgłoszenie zamiaru montażu do wspólnoty lub spółdzielni. Coraz więcej wspólnot realizuje projekty tzw. infrastruktury ładowania, które umożliwiają montaż wallboxów wielu mieszkańcom równocześnie.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'stacja-ladowania-dom-vs-blok',
       },
       {
@@ -413,6 +434,7 @@ export const ARTICLES: Article[] = [
           'Najczęstsze błędy to: podłączanie wallboxa do starej lub przeciążonej instalacji, brak osobnego obwodu, brak RCD typu A lub B, nieodpowiedni przekrój przewodów, montaż bez wcześniejszych pomiarów lub dobór stacji ładowania o mocy większej niż pozwala przyłącze. Każdy z tych błędów zwiększa ryzyko awarii i skraca żywotność urządzeń.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'najczestsze-bledy-przy-instalacji-stacji-ladowania',
       },
       {
@@ -422,6 +444,7 @@ export const ARTICLES: Article[] = [
           'Na Wilanowie zamontowaliśmy wallbox 11 kW w garażu podziemnym – trasa kablowa miała 32 metry, a prace trwały jeden dzień. Na Bielanach w domu jednorodzinnym wykonaliśmy montaż stacji ładowania 22 kW wraz z modernizacją rozdzielnicy. W firmie transportowej na Białołęce zainstalowaliśmy 6 punktów ładowania AC oraz jedną stację ładowania DC 40 kW.',
         imageLarge: '/ladowarka.png',
         imageSmall: '/ladowarka.png',
+        mobileImageMode: 'SAME',
         slug: 'stacje-ladowania-warszawa-realizacje',
       },
       {
@@ -431,6 +454,7 @@ export const ARTICLES: Article[] = [
           'Chcesz zamontować własną stację ładowania? Wykonamy bezpłatną ocenę techniczną i przedstawimy rzetelną wycenę montażu. Zadzwoń: 790 270 070 lub napisz: biuro@montroe.com.',
         imageLarge: '',
         imageSmall: '',
+        mobileImageMode: 'SAME',
         slug: 'umow-darmowy-audyt-stacji',
       },
     ],
@@ -495,6 +519,7 @@ export const ARTICLES: Article[] = [
         imageLarge: '/faktura.jpg',
         imageSmall: '/faktura.jpg',
         slug: 'jak-sprawdzic-czy-placisz-za-moc-bierna',
+        mobileImageMode: 'SAME',
       },
       {
         id: '2',
@@ -504,6 +529,7 @@ export const ARTICLES: Article[] = [
         imageLarge: '',
         imageSmall: '',
         slug: 'kalkulator-oplat-za-moc-bierna',
+        mobileImageMode: 'SAME',
       },
       {
         id: '3',
@@ -513,6 +539,7 @@ export const ARTICLES: Article[] = [
         imageLarge: '/kompensator.jpg',
         imageSmall: '/kompensator.jpg',
         slug: 'jak-zmniejszyc-oplaty-za-energie-bierna',
+        mobileImageMode: 'SAME',
       },
       {
         id: '4',
@@ -522,6 +549,7 @@ export const ARTICLES: Article[] = [
         imageLarge: '',
         imageSmall: '',
         slug: 'zamawiam-darmowy-audyt',
+        mobileImageMode: 'SAME',
       },
     ],
   },

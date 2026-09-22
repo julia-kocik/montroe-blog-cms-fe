@@ -21,11 +21,14 @@ export interface ArticleTableOfContentItem {
   link: string;
 }
 
+export type MobileImageMode = 'SAME' | 'CUSTOM' | 'HIDDEN';
+
 export interface ArticleSection {
   id: string;
   subHeading: string;
   paragraph: string;
   imageLarge: string;
   imageSmall: string;
+  mobileImageMode: MobileImageMode;
   slug: string;
 }

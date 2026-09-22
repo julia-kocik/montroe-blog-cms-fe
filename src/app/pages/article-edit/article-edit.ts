@@ -8,6 +8,7 @@ import {
   ArticleSection,
   ArticleSummaryItem,
   ArticleTableOfContentItem,
+  MobileImageMode,
 } from '../../models/article.model';
 
 import { ArticleService } from '../../services/article';
@@ -282,6 +283,7 @@ export class ArticleEdit {
       paragraph: '',
       imageLarge: '',
       imageSmall: '',
+      mobileImageMode: 'SAME',
       slug: '',
     };
 
@@ -309,6 +311,20 @@ export class ArticleEdit {
     }));
   }
 
+  updateMobileImageMode(id: string, mode: MobileImageMode): void {
+    this.article.update((current) => ({
+      ...current,
+      sections: current.sections.map((section) =>
+        section.id === id
+          ? {
+              ...section,
+              mobileImageMode: mode,
+              imageSmall: mode === 'CUSTOM' ? section.imageSmall : '',
+            }
+          : section,
+      ),
+    }));
+  }
   removeSection(id: string): void {
     const shouldRemove = confirm('Czy na pewno chcesz usunąć tę sekcję?');
 

@@ -56,7 +56,6 @@
     <form class="article-edit__form" (submit)="$event.preventDefault()">
       <p class="required-info">* pola wymagane</p>
 
-      <!-- 01 PODSTAWOWE INFORMACJE -->
       <section class="form-section">
         <div class="form-section__header">
           <div>
@@ -132,7 +131,6 @@
         </div>
       </section>
 
-      <!-- 02 PODSUMOWANIE -->
       <section class="form-section">
         <div class="form-section__header">
           <div>
@@ -195,7 +193,6 @@
         </div>
       </section>
 
-      <!-- 03 SPIS TREŚCI -->
       <section class="form-section">
         <div class="form-section__header">
           <div>
@@ -373,37 +370,90 @@
                   }
                 </label>
 
-                <label class="form-field">
-                  <span>Obraz mobile</span>
+                <div class="form-field mobile-image-mode">
+                  <span>Obraz na urządzeniach mobilnych</span>
 
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    (change)="uploadSectionImage($event, section.id, 'imageSmall')"
-                    [disabled]="isSaving()"
-                  />
+                  <label class="mobile-image-mode__option">
+                    <input
+                      type="radio"
+                      [name]="'mobile-image-mode-' + section.id"
+                      value="SAME"
+                      [ngModel]="section.mobileImageMode"
+                      (ngModelChange)="updateMobileImageMode(section.id, $event)"
+                      [disabled]="isSaving()"
+                    />
 
-                  @if (isSectionImageUploading(section.id, 'imageSmall')) {
-                    <small> Wysyłanie obrazu... </small>
-                  }
+                    <span>Ten sam obraz co na desktop</span>
+                  </label>
 
-                  @if (section.imageSmall && !isSectionImageUploading(section.id, 'imageSmall')) {
-                    <small>
-                      {{ section.imageSmall }}
-                    </small>
-                  }
-                </label>
+                  <label class="mobile-image-mode__option">
+                    <input
+                      type="radio"
+                      [name]="'mobile-image-mode-' + section.id"
+                      value="CUSTOM"
+                      [ngModel]="section.mobileImageMode"
+                      (ngModelChange)="updateMobileImageMode(section.id, $event)"
+                      [disabled]="isSaving()"
+                    />
+
+                    <span>Inny obraz</span>
+                  </label>
+
+                  <label class="mobile-image-mode__option">
+                    <input
+                      type="radio"
+                      [name]="'mobile-image-mode-' + section.id"
+                      value="HIDDEN"
+                      [ngModel]="section.mobileImageMode"
+                      (ngModelChange)="updateMobileImageMode(section.id, $event)"
+                      [disabled]="isSaving()"
+                    />
+
+                    <span>Nie wyświetlaj obrazu</span>
+                  </label>
+                </div>
+
+                @if (section.mobileImageMode === 'CUSTOM') {
+                  <label class="form-field form-field--mobile-upload">
+                    <span>Obraz mobile</span>
+
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      (change)="uploadSectionImage($event, section.id, 'imageSmall')"
+                      [disabled]="isSaving()"
+                    />
+
+                    @if (isSectionImageUploading(section.id, 'imageSmall')) {
+                      <small>Wysyłanie obrazu...</small>
+                    }
+
+                    @if (section.imageSmall && !isSectionImageUploading(section.id, 'imageSmall')) {
+                      <small>
+                        {{ section.imageSmall }}
+                      </small>
+                    }
+                  </label>
+                }
 
                 @if (section.imageLarge) {
-                  <div class="section-image-preview">
+                  <div class="section-image-preview section-image-preview--desktop">
                     <span>Desktop</span>
 
                     <img [src]="getImageUrl(section.imageLarge)" [alt]="section.subHeading" />
                   </div>
                 }
 
-                @if (section.imageSmall) {
-                  <div class="section-image-preview">
+                @if (section.mobileImageMode === 'SAME' && section.imageLarge) {
+                  <div class="section-image-preview section-image-preview--mobile">
+                    <span>Mobile — ten sam obraz</span>
+
+                    <img [src]="getImageUrl(section.imageLarge)" [alt]="section.subHeading" />
+                  </div>
+                }
+
+                @if (section.mobileImageMode === 'CUSTOM' && section.imageSmall) {
+                  <div class="section-image-preview section-image-preview--mobile">
                     <span>Mobile</span>
 
                     <img [src]="getImageUrl(section.imageSmall)" [alt]="section.subHeading" />

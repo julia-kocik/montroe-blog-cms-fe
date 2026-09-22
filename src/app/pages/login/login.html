@@ -1,11 +1,7 @@
 <main class="login-page">
   <section class="login-card">
     <div class="login-panel">
-      <a
-        class="brand"
-        href="/"
-        aria-label="Montroe CMS"
-      >
+      <a class="brand" href="/" aria-label="Montroe CMS">
         <span>Montroe CMS</span>
       </a>
 
@@ -15,15 +11,9 @@
           <p>Wprowadź swoje dane.</p>
         </header>
 
-        <form
-          class="login-form"
-          [formGroup]="loginForm"
-          (ngSubmit)="onSubmit()"
-        >
+        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div class="form-field">
-            <label for="email">
-              Email
-            </label>
+            <label for="email"> Email </label>
 
             <input
               id="email"
@@ -35,32 +25,18 @@
             />
 
             @if (
-              loginForm.controls.email.touched &&
-              loginForm.controls.email.hasError(
-                'required'
-              )
+              loginForm.controls.email.touched && loginForm.controls.email.hasError('required')
             ) {
-              <p class="error-message">
-                Email jest wymagany.
-              </p>
+              <p class="error-message">Email jest wymagany.</p>
             }
 
-            @if (
-              loginForm.controls.email.touched &&
-              loginForm.controls.email.hasError(
-                'email'
-              )
-            ) {
-              <p class="error-message">
-                Wprowadź poprawny adres email.
-              </p>
+            @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('email')) {
+              <p class="error-message">Wprowadź poprawny adres email.</p>
             }
           </div>
 
           <div class="form-field">
-            <label for="password">
-              Hasło
-            </label>
+            <label for="password"> Hasło </label>
 
             <input
               id="password"
@@ -73,33 +49,20 @@
 
             @if (
               loginForm.controls.password.touched &&
-              loginForm.controls.password.hasError(
-                'required'
-              )
+              loginForm.controls.password.hasError('required')
             ) {
-              <p class="error-message">
-                Hasło jest wymagane.
-              </p>
+              <p class="error-message">Hasło jest wymagane.</p>
             }
 
             @if (
               loginForm.controls.password.touched &&
-              loginForm.controls.password.hasError(
-                'minlength'
-              )
+              loginForm.controls.password.hasError('minlength')
             ) {
-              <p class="error-message">
-                Hasło musi zawierać co najmniej
-                6 znaków.
-              </p>
+              <p class="error-message">Hasło musi zawierać co najmniej 6 znaków.</p>
             }
           </div>
 
-          <button
-            class="submit-button"
-            type="submit"
-            [disabled]="isLoggingIn()"
-          >
+          <button class="submit-button" type="submit" [disabled]="isLoggingIn()">
             @if (isLoggingIn()) {
               Logowanie...
             } @else {
@@ -109,17 +72,12 @@
         </form>
       </div>
 
-      <footer class="login-footer">
-        © 2026 Montroe CMS
-      </footer>
+      <footer class="login-footer">© 2026 Montroe CMS</footer>
     </div>
 
     <aside class="image-panel">
       <div class="image-placeholder">
-        <img
-          src="logo.png"
-          alt="Montroe"
-        />
+        <img src="logo.png" alt="Montroe" />
       </div>
     </aside>
   </section>

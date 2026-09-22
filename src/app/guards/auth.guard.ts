@@ -12,6 +12,6 @@ export const authGuard: CanActivateFn = () => {
     map(() => true),
     catchError(() => {
       return of(router.createUrlTree(['/login']));
-    })
+    }),
   );
 };

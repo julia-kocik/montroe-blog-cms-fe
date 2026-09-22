@@ -1,8 +1,4 @@
-import {
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
@@ -17,32 +13,22 @@ import { Spinner } from '../../components/common/spinner/spinner';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [
-    RouterLink,
-    DatePipe,
-    SectionWrapper,
-    SectionHeader,
-    Spinner,
-  ],
+  imports: [RouterLink, DatePipe, SectionWrapper, SectionHeader, Spinner],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
 export class Dashboard {
-  private readonly articleService =
-    inject(ArticleService);
+  private readonly articleService = inject(ArticleService);
 
-  private readonly imageService =
-    inject(ImageService);
+  private readonly imageService = inject(ImageService);
 
-  private readonly toastService =
-    inject(ToastService);
+  private readonly toastService = inject(ToastService);
 
   readonly articles = this.articleService.articles;
 
   readonly isLoading = signal(true);
 
-  readonly deletingArticleId =
-    signal<string | null>(null);
+  readonly deletingArticleId = signal<string | null>(null);
 
   constructor() {
     this.loadArticles();
@@ -57,14 +43,9 @@ export class Dashboard {
         this.isLoading.set(false);
       },
       error: (error) => {
-        console.error(
-          'Failed to load articles',
-          error
-        );
+        console.error('Failed to load articles', error);
 
-        this.toastService.error(
-          'Nie udało się pobrać artykułów.'
-        );
+        this.toastService.error('Nie udało się pobrać artykułów.');
 
         this.isLoading.set(false);
       },
@@ -75,13 +56,8 @@ export class Dashboard {
     return this.imageService.getUrl(image);
   }
 
-  deleteArticle(
-    id: string,
-    name: string
-  ): void {
-    const shouldDelete = confirm(
-      `Czy na pewno chcesz usunąć artykuł „${name}”?`
-    );
+  deleteArticle(id: string, name: string): void {
+    const shouldDelete = confirm(`Czy na pewno chcesz usunąć artykuł „${name}”?`);
 
     if (!shouldDelete) {
       return;
@@ -91,30 +67,20 @@ export class Dashboard {
 
     this.articleService.deleteArticle(id).subscribe({
       next: () => {
-        this.articleService.articles.update(
-          (articles) =>
-            articles.filter(
-              (article) => article.id !== id
-            )
+        this.articleService.articles.update((articles) =>
+          articles.filter((article) => article.id !== id),
         );
 
         this.deletingArticleId.set(null);
 
-        this.toastService.success(
-          'Artykuł został usunięty.'
-        );
+        this.toastService.success('Artykuł został usunięty.');
       },
       error: (error) => {
-        console.error(
-          'Failed to delete article',
-          error
-        );
+        console.error('Failed to delete article', error);
 
         this.deletingArticleId.set(null);
 
-        this.toastService.error(
-          'Nie udało się usunąć artykułu.'
-        );
+        this.toastService.error('Nie udało się usunąć artykułu.');
       },
     });
   }

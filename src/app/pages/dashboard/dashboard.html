@@ -1,26 +1,17 @@
 <app-section-wrapper>
-  <app-section-header
-    text="Panel administracyjny"
-  ></app-section-header>
+  <app-section-header text="Panel administracyjny"></app-section-header>
 
   <main class="dashboard">
     <div class="dashboard__header">
       <div>
         <h2>Wszystkie artykuły</h2>
 
-        <p>
-          Zarządzaj artykułami opublikowanymi
-          na blogu.
-        </p>
+        <p>Zarządzaj artykułami opublikowanymi na blogu.</p>
       </div>
 
       <span class="dashboard__counter">
         {{ articles().length }}
-        {{
-          articles().length === 1
-            ? 'artykuł'
-            : 'artykułów'
-        }}
+        {{ articles().length === 1 ? 'artykuł' : 'artykułów' }}
       </span>
     </div>
 
@@ -32,24 +23,15 @@
       </div>
     } @else {
       <div class="articles">
-        @for (
-          article of articles();
-          track article.id
-        ) {
+        @for (article of articles(); track article.id) {
           <article class="article-card">
             <div class="article-card__image">
-              <img
-                [src]="getImageUrl(article.image)"
-                [alt]="article.name"
-              />
+              <img [src]="getImageUrl(article.image)" [alt]="article.name" />
             </div>
 
             <div class="article-card__content">
               <p class="article-card__date">
-                {{
-                  article.publicationDate
-                    | date:'d MMMM y':'':'pl'
-                }}
+                {{ article.publicationDate | date: 'd MMMM y' : '' : 'pl' }}
               </p>
 
               <h3>
@@ -62,9 +44,7 @@
 
               <a
                 class="article-card__link"
-                [href]="
-                  '/blog/' + article.path
-                "
+                [href]="'/blog/' + article.path"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -76,14 +56,8 @@
               <button
                 type="button"
                 class="button button--edit"
-                [routerLink]="[
-                  '/dashboard/edit',
-                  article.id
-                ]"
-                [disabled]="
-                  deletingArticleId() ===
-                  article.id
-                "
+                [routerLink]="['/dashboard/edit', article.id]"
+                [disabled]="deletingArticleId() === article.id"
               >
                 Edytuj
               </button>
@@ -91,21 +65,10 @@
               <button
                 type="button"
                 class="button button--delete"
-                (click)="
-                  deleteArticle(
-                    article.id,
-                    article.name
-                  )
-                "
-                [disabled]="
-                  deletingArticleId() ===
-                  article.id
-                "
+                (click)="deleteArticle(article.id, article.name)"
+                [disabled]="deletingArticleId() === article.id"
               >
-                @if (
-                  deletingArticleId() ===
-                  article.id
-                ) {
+                @if (deletingArticleId() === article.id) {
                   Usuwanie...
                 } @else {
                   Usuń
@@ -117,21 +80,14 @@
           <div class="empty-state">
             <h3>Brak artykułów</h3>
 
-            <p>
-              Dodaj pierwszy artykuł do swojego
-              bloga.
-            </p>
+            <p>Dodaj pierwszy artykuł do swojego bloga.</p>
           </div>
         }
       </div>
     }
 
     <div class="dashboard__footer">
-      <button
-        type="button"
-        class="button button--add"
-        routerLink="/dashboard/new"
-      >
+      <button type="button" class="button button--add" routerLink="/dashboard/new">
         + Dodaj artykuł
       </button>
     </div>

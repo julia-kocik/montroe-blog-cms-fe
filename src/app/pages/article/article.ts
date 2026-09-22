@@ -1,12 +1,5 @@
-import {
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
-import {
-  ActivatedRoute,
-  RouterLink,
-} from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { Article as ArticleModel } from '../../models/article.model';
 import { ArticleService } from '../../services/article';
@@ -39,46 +32,33 @@ import { ImageService } from '../../services/image';
 export class Article {
   private readonly route = inject(ActivatedRoute);
 
-  private readonly articleService =
-    inject(ArticleService);
+  private readonly articleService = inject(ArticleService);
   private readonly imageService = inject(ImageService);
 
-  readonly article = signal<ArticleModel | undefined>(
-    undefined
-  );
+  readonly article = signal<ArticleModel | undefined>(undefined);
 
   constructor() {
     if (this.route.snapshot.routeConfig?.path === 'dashboard/preview') {
-      const preview = localStorage.getItem(
-        'article-preview'
-      );
+      const preview = localStorage.getItem('article-preview');
 
       if (preview) {
-        this.article.set(
-          JSON.parse(preview) as ArticleModel
-        );
+        this.article.set(JSON.parse(preview) as ArticleModel);
       }
 
       return;
     }
 
-    const path =
-      this.route.snapshot.paramMap.get('path');
+    const path = this.route.snapshot.paramMap.get('path');
 
     if (path) {
-      this.articleService
-        .getArticleByPath(path)
-        .subscribe({
-          next: (article) => {
-            this.article.set(article);
-          },
-          error: (error) => {
-            console.error(
-              'Failed to load article',
-              error
-            );
-          },
-        });
+      this.articleService.getArticleByPath(path).subscribe({
+        next: (article) => {
+          this.article.set(article);
+        },
+        error: (error) => {
+          console.error('Failed to load article', error);
+        },
+      });
     }
   }
 

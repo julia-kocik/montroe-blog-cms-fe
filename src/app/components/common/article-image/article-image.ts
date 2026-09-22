@@ -8,7 +8,6 @@ import { Component, computed, input } from '@angular/core';
   styleUrl: './article-image.scss',
 })
 export class ArticleImage {
-
   readonly src = input.required<string>();
 
   readonly alt = input.required<string>();
@@ -20,7 +19,6 @@ export class ArticleImage {
   readonly hiddenOnLarge = input(false);
 
   readonly visibilityClass = computed(() => {
-
     if (this.hiddenOnSmall()) {
       return 'hidden-on-small';
     }
@@ -30,7 +28,5 @@ export class ArticleImage {
     }
 
     return '';
-
   });
-
 }

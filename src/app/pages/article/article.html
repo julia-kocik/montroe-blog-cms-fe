@@ -1,19 +1,14 @@
 @if (article(); as currentArticle) {
   <app-section-wrapper>
-    <app-section-header
-      [text]="currentArticle.name"
-    />
+    <app-section-header [text]="currentArticle.name" />
 
     <main class="article-page">
       <div class="article-page__container">
         <article class="article-card">
           <span class="article-meta">
-          <time>
-            {{
-              currentArticle.publicationDate
-                | date:'d MMMM y':'':'pl'
-            }}
-          </time>
+            <time>
+              {{ currentArticle.publicationDate | date: 'd MMMM y' : '' : 'pl' }}
+            </time>
           </span>
 
           <p class="article-lead">
@@ -28,23 +23,14 @@
               height="500px"
             />
           }
-          <app-article-summary
-            [summaryList]="currentArticle.summaryItems"
-          />
+          <app-article-summary [summaryList]="currentArticle.summaryItems" />
 
-          <app-article-contents
-            [contentsList]="currentArticle.tableOfContentItems"
-          />
+          <app-article-contents [contentsList]="currentArticle.tableOfContentItems" />
 
           <div class="article-sections">
-            @for (
-              section of currentArticle.sections;
-              track section.id
-            ) {
+            @for (section of currentArticle.sections; track section.id) {
               <section class="article-section">
-                <app-section-sub-header
-                  [text]="section.subHeading"
-                />
+                <app-section-sub-header [text]="section.subHeading" />
 
                 <p class="article-section__paragraph">
                   {{ section.paragraph }}
@@ -72,12 +58,7 @@
           </div>
 
           <div class="article-card__action">
-            <a
-              class="audit-button"
-              routerLink="/contact"
-            >
-              Zamawiam darmowy audyt
-            </a>
+            <a class="audit-button" routerLink="/contact"> Zamawiam darmowy audyt </a>
           </div>
         </article>
       </div>
@@ -86,23 +67,13 @@
 } @else {
   <main class="article-not-found">
     <div class="article-not-found__card">
-      <span class="article-not-found__code">
-        404
-      </span>
+      <span class="article-not-found__code"> 404 </span>
 
       <h1>Nie znaleziono artykułu</h1>
 
-      <p>
-        Artykuł nie istnieje albo jego adres
-        został zmieniony.
-      </p>
+      <p>Artykuł nie istnieje albo jego adres został zmieniony.</p>
 
-      <a
-        class="audit-button"
-        routerLink="/dashboard"
-      >
-        Wróć do panelu
-      </a>
+      <a class="audit-button" routerLink="/dashboard"> Wróć do panelu </a>
     </div>
   </main>
 }

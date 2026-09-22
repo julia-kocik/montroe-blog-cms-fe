@@ -1,13 +1,7 @@
 <app-toast />
 
 @if (!isLoginPage) {
-  <button
-    class="logout-button"
-    type="button"
-    (click)="logout()"
-  >
-    Wyloguj
-  </button>
+  <button class="logout-button" type="button" (click)="logout()">Wyloguj</button>
 }
 
 <router-outlet></router-outlet>

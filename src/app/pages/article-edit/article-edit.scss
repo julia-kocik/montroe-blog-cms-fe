@@ -15,8 +15,7 @@
   background: #ffffff;
   border: 1px solid #f0eef5;
   border-radius: 30px;
-  box-shadow:
-    0 15px 45px rgba(40, 36, 61, 0.08);
+  box-shadow: 0 15px 45px rgba(40, 36, 61, 0.08);
 }
 
 .article-edit__header {
@@ -126,8 +125,7 @@
 
 .form-grid {
   display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
 }
 
@@ -180,8 +178,7 @@
 .form-field textarea:focus {
   outline: none;
   border-color: #615a91;
-  box-shadow:
-    0 0 0 4px rgba(97, 90, 145, 0.11);
+  box-shadow: 0 0 0 4px rgba(97, 90, 145, 0.11);
 }
 
 .input-prefix {
@@ -208,8 +205,7 @@
 
 .input-prefix:focus-within {
   border-color: #615a91;
-  box-shadow:
-    0 0 0 4px rgba(97, 90, 145, 0.11);
+  box-shadow: 0 0 0 4px rgba(97, 90, 145, 0.11);
 }
 
 .input-prefix input:focus {
@@ -247,8 +243,7 @@
 
 .collection-item {
   display: grid;
-  grid-template-columns:
-    42px minmax(0, 1fr) 42px;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
   align-items: flex-start;
   gap: 14px;
   padding: 18px;
@@ -348,8 +343,7 @@
 
 .section-images {
   display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -526,12 +520,10 @@
   }
 
   .collection-item {
-    grid-template-columns:
-      34px minmax(0, 1fr);
+    grid-template-columns: 34px minmax(0, 1fr);
   }
 
-  .collection-item >
-    .icon-button {
+  .collection-item > .icon-button {
     grid-column: 2;
     justify-self: flex-end;
   }

@@ -10,8 +10,5 @@ import { ArticleSummaryItem } from '../../../models/article.model';
   styleUrl: './article-summary.scss',
 })
 export class ArticleSummary {
-
-  readonly summaryList =
-    input.required<ArticleSummaryItem[]>();
-
+  readonly summaryList = input.required<ArticleSummaryItem[]>();
 }

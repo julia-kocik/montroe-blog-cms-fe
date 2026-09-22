@@ -8,21 +8,14 @@
   } @else {
     <div class="article-edit__header">
       <div>
-        <p class="article-edit__eyebrow">
-          Panel administracyjny
-        </p>
+        <p class="article-edit__eyebrow">Panel administracyjny</p>
 
         <h1>
-          {{
-            isNewArticle
-              ? 'Nowy artykuł'
-              : 'Edytuj artykuł'
-          }}
+          {{ isNewArticle ? 'Nowy artykuł' : 'Edytuj artykuł' }}
         </h1>
 
         <p class="article-edit__description">
-          Zmień dane artykułu, podsumowanie,
-          spis treści oraz wszystkie sekcje.
+          Zmień dane artykułu, podsumowanie, spis treści oraz wszystkie sekcje.
         </p>
       </div>
 
@@ -40,11 +33,7 @@
           type="button"
           class="button button--save"
           (click)="saveArticle()"
-          [disabled]="
-            isSaving() ||
-            isUploadingMainImage() ||
-            uploadingSectionImages().size > 0
-          "
+          [disabled]="isSaving() || isUploadingMainImage() || uploadingSectionImages().size > 0"
         >
           @if (isSaving()) {
             Zapisywanie...
@@ -64,44 +53,32 @@
       </div>
     </div>
 
-    <form
-      class="article-edit__form"
-      (submit)="$event.preventDefault()"
-    >
-      <p class="required-info">
-        * pola wymagane
-      </p>
+    <form class="article-edit__form" (submit)="$event.preventDefault()">
+      <p class="required-info">* pola wymagane</p>
 
       <!-- 01 PODSTAWOWE INFORMACJE -->
       <section class="form-section">
         <div class="form-section__header">
           <div>
-            <span class="form-section__number">
-              01
-            </span>
+            <span class="form-section__number"> 01 </span>
 
             <h2>Podstawowe informacje</h2>
           </div>
 
-          <p>
-            Główne dane wyświetlane na stronie
-            artykułu.
-          </p>
+          <p>Główne dane wyświetlane na stronie artykułu.</p>
         </div>
 
         <div class="form-grid">
-          <label
-            class="form-field form-field--full"
-          >
+          <label class="form-field form-field--full">
             <span>Tytuł *</span>
 
             <input
               type="text"
               [ngModel]="article().name"
               (ngModelChange)="
-                article.update(current => ({
+                article.update((current) => ({
                   ...current,
-                  name: $event
+                  name: $event,
                 }))
               "
               name="name"
@@ -120,48 +97,32 @@
             />
 
             @if (isUploadingMainImage()) {
-              <small>
-                Wysyłanie obrazu...
-              </small>
+              <small> Wysyłanie obrazu... </small>
             }
 
-            @if (
-              article().image &&
-              !isUploadingMainImage()
-            ) {
+            @if (article().image && !isUploadingMainImage()) {
               <small>
                 {{ article().image }}
               </small>
 
-              <div
-                class="section-image-preview"
-              >
+              <div class="section-image-preview">
                 <span>Podgląd</span>
 
-                <img
-                  [src]="
-                    getImageUrl(
-                      article().image
-                    )
-                  "
-                  [alt]="article().name"
-                />
+                <img [src]="getImageUrl(article().image)" [alt]="article().name" />
               </div>
             }
           </label>
 
-          <label
-            class="form-field form-field--full"
-          >
+          <label class="form-field form-field--full">
             <span>Lead *</span>
 
             <textarea
               rows="6"
               [ngModel]="article().lead"
               (ngModelChange)="
-                article.update(current => ({
+                article.update((current) => ({
                   ...current,
-                  lead: $event
+                  lead: $event,
                 }))
               "
               name="lead"
@@ -175,32 +136,20 @@
       <section class="form-section">
         <div class="form-section__header">
           <div>
-            <span class="form-section__number">
-              02
-            </span>
+            <span class="form-section__number"> 02 </span>
 
-            <h2>
-              Najważniejsze informacje *
-            </h2>
+            <h2>Najważniejsze informacje *</h2>
           </div>
 
           <p>
-            Lista punktów wyświetlana na
-            początku artykułu. Wymagany jest
-            przynajmniej jeden punkt.
+            Lista punktów wyświetlana na początku artykułu. Wymagany jest przynajmniej jeden punkt.
           </p>
         </div>
 
         <div class="collection">
-          @for (
-            item of article().summaryItems;
-            track item.id;
-            let index = $index
-          ) {
+          @for (item of article().summaryItems; track item.id; let index = $index) {
             <div class="collection-item">
-              <span
-                class="collection-item__index"
-              >
+              <span class="collection-item__index">
                 {{ index + 1 }}
               </span>
 
@@ -210,15 +159,8 @@
                 <textarea
                   rows="3"
                   [ngModel]="item.name"
-                  (ngModelChange)="
-                    updateSummaryItem(
-                      item.id,
-                      $event
-                    )
-                  "
-                  [name]="
-                    'summary-' + item.id
-                  "
+                  (ngModelChange)="updateSummaryItem(item.id, $event)"
+                  [name]="'summary-' + item.id"
                   placeholder="Wpisz najważniejszą informację"
                 ></textarea>
               </label>
@@ -228,9 +170,7 @@
                 class="icon-button icon-button--delete"
                 aria-label="Usuń punkt"
                 title="Usuń punkt"
-                (click)="
-                  removeSummaryItem(item.id)
-                "
+                (click)="removeSummaryItem(item.id)"
                 [disabled]="isSaving()"
               >
                 ×
@@ -240,10 +180,7 @@
             <div class="empty-state">
               <h3>Brak punktów</h3>
 
-              <p>
-                Dodaj przynajmniej jeden
-                punkt podsumowania.
-              </p>
+              <p>Dodaj przynajmniej jeden punkt podsumowania.</p>
             </div>
           }
 
@@ -262,54 +199,30 @@
       <section class="form-section">
         <div class="form-section__header">
           <div>
-            <span class="form-section__number">
-              03
-            </span>
+            <span class="form-section__number"> 03 </span>
 
             <h2>Spis treści *</h2>
           </div>
 
-          <p>
-            Odnośniki prowadzące do sekcji
-            artykułu. Wymagana jest
-            przynajmniej jedna pozycja.
-          </p>
+          <p>Odnośniki prowadzące do sekcji artykułu. Wymagana jest przynajmniej jedna pozycja.</p>
         </div>
 
         <div class="collection">
-          @for (
-            item of
-              article().tableOfContentItems;
-            track item.id;
-            let index = $index
-          ) {
+          @for (item of article().tableOfContentItems; track item.id; let index = $index) {
             <div class="collection-item">
-              <span
-                class="collection-item__index"
-              >
+              <span class="collection-item__index">
                 {{ index + 1 }}
               </span>
 
-              <div
-                class="collection-item__fields"
-              >
+              <div class="collection-item__fields">
                 <label class="form-field">
                   <span>Nazwa pozycji *</span>
 
                   <input
                     type="text"
                     [ngModel]="item.name"
-                    (ngModelChange)="
-                      updateContentItem(
-                        item.id,
-                        'name',
-                        $event
-                      )
-                    "
-                    [name]="
-                      'content-name-' +
-                      item.id
-                    "
+                    (ngModelChange)="updateContentItem(item.id, 'name', $event)"
+                    [name]="'content-name-' + item.id"
                     placeholder="Nazwa sekcji"
                   />
                 </label>
@@ -320,9 +233,7 @@
                 class="icon-button icon-button--delete"
                 aria-label="Usuń pozycję"
                 title="Usuń pozycję"
-                (click)="
-                  removeContentItem(item.id)
-                "
+                (click)="removeContentItem(item.id)"
                 [disabled]="isSaving()"
               >
                 ×
@@ -332,10 +243,7 @@
             <div class="empty-state">
               <h3>Brak spisu treści</h3>
 
-              <p>
-                Dodaj przynajmniej jedną
-                pozycję spisu treści.
-              </p>
+              <p>Dodaj przynajmniej jedną pozycję spisu treści.</p>
             </div>
           }
 
@@ -354,17 +262,13 @@
       <section class="form-section">
         <div class="form-section__header">
           <div>
-            <span class="form-section__number">
-              04
-            </span>
+            <span class="form-section__number"> 04 </span>
 
             <h2>Sekcje artykułu *</h2>
           </div>
 
           <p>
-            Nagłówki, akapity i obrazy
-            właściwej treści artykułu.
-            Wymagana jest przynajmniej jedna
+            Nagłówki, akapity i obrazy właściwej treści artykułu. Wymagana jest przynajmniej jedna
             sekcja.
           </p>
         </div>
@@ -377,41 +281,24 @@
             let first = $first;
             let last = $last
           ) {
-            <article
-              class="article-section-card"
-            >
-              <div
-                class="article-section-card__header"
-              >
+            <article class="article-section-card">
+              <div class="article-section-card__header">
                 <div>
-                  <span
-                    class="article-section-card__label"
-                  >
-                    Sekcja {{ index + 1 }}
-                  </span>
+                  <span class="article-section-card__label"> Sekcja {{ index + 1 }} </span>
 
                   <h3>
-                    {{
-                      section.subHeading ||
-                        'Bez tytułu'
-                    }}
+                    {{ section.subHeading || 'Bez tytułu' }}
                   </h3>
                 </div>
 
-                <div
-                  class="article-section-card__actions"
-                >
+                <div class="article-section-card__actions">
                   <button
                     type="button"
                     class="icon-button"
-                    [disabled]="
-                      first || isSaving()
-                    "
+                    [disabled]="first || isSaving()"
                     aria-label="Przenieś wyżej"
                     title="Przenieś wyżej"
-                    (click)="
-                      moveSectionUp(index)
-                    "
+                    (click)="moveSectionUp(index)"
                   >
                     ↑
                   </button>
@@ -419,14 +306,10 @@
                   <button
                     type="button"
                     class="icon-button"
-                    [disabled]="
-                      last || isSaving()
-                    "
+                    [disabled]="last || isSaving()"
                     aria-label="Przenieś niżej"
                     title="Przenieś niżej"
-                    (click)="
-                      moveSectionDown(index)
-                    "
+                    (click)="moveSectionDown(index)"
                   >
                     ↓
                   </button>
@@ -436,11 +319,7 @@
                     class="icon-button icon-button--delete"
                     aria-label="Usuń sekcję"
                     title="Usuń sekcję"
-                    (click)="
-                      removeSection(
-                        section.id
-                      )
-                    "
+                    (click)="removeSection(section.id)"
                     [disabled]="isSaving()"
                   >
                     ×
@@ -449,56 +328,26 @@
               </div>
 
               <div class="form-grid">
-                <label
-                  class="form-field form-field--full"
-                >
-                  <span>
-                    Nagłówek sekcji *
-                  </span>
+                <label class="form-field form-field--full">
+                  <span> Nagłówek sekcji * </span>
 
                   <input
                     type="text"
-                    [ngModel]="
-                      section.subHeading
-                    "
-                    (ngModelChange)="
-                      updateSection(
-                        section.id,
-                        'subHeading',
-                        $event
-                      )
-                    "
-                    [name]="
-                      'section-heading-' +
-                      section.id
-                    "
+                    [ngModel]="section.subHeading"
+                    (ngModelChange)="updateSection(section.id, 'subHeading', $event)"
+                    [name]="'section-heading-' + section.id"
                     placeholder="Nagłówek sekcji"
                   />
                 </label>
 
-                <label
-                  class="form-field form-field--full"
-                >
-                  <span>
-                    Treść sekcji *
-                  </span>
+                <label class="form-field form-field--full">
+                  <span> Treść sekcji * </span>
 
                   <textarea
                     rows="10"
-                    [ngModel]="
-                      section.paragraph
-                    "
-                    (ngModelChange)="
-                      updateSection(
-                        section.id,
-                        'paragraph',
-                        $event
-                      )
-                    "
-                    [name]="
-                      'section-paragraph-' +
-                      section.id
-                    "
+                    [ngModel]="section.paragraph"
+                    (ngModelChange)="updateSection(section.id, 'paragraph', $event)"
+                    [name]="'section-paragraph-' + section.id"
                     placeholder="Wpisz treść sekcji"
                   ></textarea>
                 </label>
@@ -509,38 +358,17 @@
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
-                    (change)="
-                      uploadSectionImage(
-                        $event,
-                        section.id,
-                        'imageLarge'
-                      )
-                    "
+                    (change)="uploadSectionImage($event, section.id, 'imageLarge')"
                     [disabled]="isSaving()"
                   />
 
-                  @if (
-                    isSectionImageUploading(
-                      section.id,
-                      'imageLarge'
-                    )
-                  ) {
-                    <small>
-                      Wysyłanie obrazu...
-                    </small>
+                  @if (isSectionImageUploading(section.id, 'imageLarge')) {
+                    <small> Wysyłanie obrazu... </small>
                   }
 
-                  @if (
-                    section.imageLarge &&
-                    !isSectionImageUploading(
-                      section.id,
-                      'imageLarge'
-                    )
-                  ) {
+                  @if (section.imageLarge && !isSectionImageUploading(section.id, 'imageLarge')) {
                     <small>
-                      {{
-                        section.imageLarge
-                      }}
+                      {{ section.imageLarge }}
                     </small>
                   }
                 </label>
@@ -551,112 +379,51 @@
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
-                    (change)="
-                      uploadSectionImage(
-                        $event,
-                        section.id,
-                        'imageSmall'
-                      )
-                    "
+                    (change)="uploadSectionImage($event, section.id, 'imageSmall')"
                     [disabled]="isSaving()"
                   />
 
-                  @if (
-                    isSectionImageUploading(
-                      section.id,
-                      'imageSmall'
-                    )
-                  ) {
-                    <small>
-                      Wysyłanie obrazu...
-                    </small>
+                  @if (isSectionImageUploading(section.id, 'imageSmall')) {
+                    <small> Wysyłanie obrazu... </small>
                   }
 
-                  @if (
-                    section.imageSmall &&
-                    !isSectionImageUploading(
-                      section.id,
-                      'imageSmall'
-                    )
-                  ) {
+                  @if (section.imageSmall && !isSectionImageUploading(section.id, 'imageSmall')) {
                     <small>
-                      {{
-                        section.imageSmall
-                      }}
+                      {{ section.imageSmall }}
                     </small>
                   }
                 </label>
 
                 @if (section.imageLarge) {
-                  <div
-                    class="section-image-preview"
-                  >
+                  <div class="section-image-preview">
                     <span>Desktop</span>
 
-                    <img
-                      [src]="
-                        getImageUrl(
-                          section.imageLarge
-                        )
-                      "
-                      [alt]="
-                        section.subHeading
-                      "
-                    />
+                    <img [src]="getImageUrl(section.imageLarge)" [alt]="section.subHeading" />
                   </div>
                 }
 
                 @if (section.imageSmall) {
-                  <div
-                    class="section-image-preview"
-                  >
+                  <div class="section-image-preview">
                     <span>Mobile</span>
 
-                    <img
-                      [src]="
-                        getImageUrl(
-                          section.imageSmall
-                        )
-                      "
-                      [alt]="
-                        section.subHeading
-                      "
-                    />
+                    <img [src]="getImageUrl(section.imageSmall)" [alt]="section.subHeading" />
                   </div>
                 }
 
-                @if (
-                  section.slug ===
-                  'kalkulator-oplat-za-moc-bierna'
-                ) {
-                  <div
-                    class="special-component form-field--full"
-                  >
-                    <strong>
-                      Kalkulator mocy biernej
-                    </strong>
+                @if (section.slug === 'kalkulator-oplat-za-moc-bierna') {
+                  <div class="special-component form-field--full">
+                    <strong> Kalkulator mocy biernej </strong>
 
-                    <p>
-                      W tym miejscu artykułu
-                      zostanie wyświetlony
-                      kalkulator.
-                    </p>
+                    <p>W tym miejscu artykułu zostanie wyświetlony kalkulator.</p>
                   </div>
                 }
               </div>
             </article>
           } @empty {
-            <div
-              class="empty-state empty-state--large"
-            >
-              <h3>
-                Brak sekcji artykułu
-              </h3>
+            <div class="empty-state empty-state--large">
+              <h3>Brak sekcji artykułu</h3>
 
-              <p>
-                Dodaj przynajmniej jedną
-                sekcję właściwej treści.
-              </p>
+              <p>Dodaj przynajmniej jedną sekcję właściwej treści.</p>
             </div>
           }
 
@@ -671,9 +438,7 @@
         </div>
       </section>
 
-      <div
-        class="article-edit__bottom-actions"
-      >
+      <div class="article-edit__bottom-actions">
         <button
           type="button"
           class="button button--cancel"
@@ -696,11 +461,7 @@
           type="button"
           class="button button--save"
           (click)="saveArticle()"
-          [disabled]="
-            isSaving() ||
-            isUploadingMainImage() ||
-            uploadingSectionImages().size > 0
-          "
+          [disabled]="isSaving() || isUploadingMainImage() || uploadingSectionImages().size > 0"
         >
           @if (isSaving()) {
             Zapisywanie...

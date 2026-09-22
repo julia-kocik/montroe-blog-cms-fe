@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 
-import { ArticleTableOfContentItem} from '../../../models/article.model';
+import { ArticleTableOfContentItem } from '../../../models/article.model';
 
 @Component({
   selector: 'app-article-contents',
@@ -10,6 +10,5 @@ import { ArticleTableOfContentItem} from '../../../models/article.model';
   styleUrl: './article-contents.scss',
 })
 export class ArticleContents {
-  readonly contentsList =
-    input.required<ArticleTableOfContentItem[]>();
+  readonly contentsList = input.required<ArticleTableOfContentItem[]>();
 }

@@ -1,9 +1,9 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import { ARTICLES } from '../data/articles';
-import { Article } from '../models/article.model';
-import { Observable } from 'rxjs';
+import { Article, ArticleSaveRequest } from '../models/article.model';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +33,7 @@ export class ArticleService {
     return this.http.get<Article>(`${this.apiUrl}/path/${path}`);
   }
 
-  addArticle(article: Article) {
+  addArticle(article: ArticleSaveRequest) {
     return this.http.post<Article>(this.apiUrl, {
       name: article.name,
       image: article.image,
@@ -44,7 +44,7 @@ export class ArticleService {
     });
   }
 
-  updateArticle(article: Article) {
+  updateArticle(article: ArticleSaveRequest) {
     return this.http.patch<Article>(`${this.apiUrl}/${article.id}`, {
       name: article.name,
       image: article.image,

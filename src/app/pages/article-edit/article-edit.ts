@@ -30,11 +30,8 @@ export class ArticleEdit {
   private readonly router = inject(Router);
 
   private readonly articleService = inject(ArticleService);
-
   private readonly fileService = inject(FileService);
-
   private readonly imageService = inject(ImageService);
-
   private readonly toastService = inject(ToastService);
 
   readonly articleId = this.route.snapshot.paramMap.get('id');
@@ -62,6 +59,8 @@ export class ArticleEdit {
   readonly uploadingSectionImages = signal<Set<string>>(new Set());
 
   readonly uploadedImageKeys = signal<Set<string>>(new Set());
+
+  readonly newItemIds = signal<Set<string>>(new Set());
 
   constructor() {
     if (this.articleId) {
@@ -150,10 +149,31 @@ export class ArticleEdit {
       return;
     }
 
+    const newItemIds = this.newItemIds();
+
+    const request = {
+      ...articleToSave,
+
+      summaryItems: articleToSave.summaryItems.map((item) => ({
+        ...item,
+        id: newItemIds.has(item.id) ? null : item.id,
+      })),
+
+      tableOfContentItems: articleToSave.tableOfContentItems.map((item) => ({
+        ...item,
+        id: newItemIds.has(item.id) ? null : item.id,
+      })),
+
+      sections: articleToSave.sections.map((section) => ({
+        ...section,
+        id: newItemIds.has(section.id) ? null : section.id,
+      })),
+    };
+
     this.isSaving.set(true);
 
     if (this.isNewArticle) {
-      this.articleService.addArticle(articleToSave).subscribe({
+      this.articleService.addArticle(request).subscribe({
         next: () => {
           this.cleanupUnusedUploadedImages();
 
@@ -178,7 +198,7 @@ export class ArticleEdit {
       return;
     }
 
-    this.articleService.updateArticle(articleToSave).subscribe({
+    this.articleService.updateArticle(request).subscribe({
       next: () => {
         this.cleanupUnusedUploadedImages();
 
@@ -202,8 +222,18 @@ export class ArticleEdit {
   }
 
   addSummaryItem(): void {
+    const id = crypto.randomUUID();
+
+    this.newItemIds.update((current) => {
+      const updated = new Set(current);
+
+      updated.add(id);
+
+      return updated;
+    });
+
     const newItem: ArticleSummaryItem = {
-      id: crypto.randomUUID(),
+      id,
       name: '',
     };
 
@@ -243,8 +273,18 @@ export class ArticleEdit {
   }
 
   addContentItem(): void {
+    const id = crypto.randomUUID();
+
+    this.newItemIds.update((current) => {
+      const updated = new Set(current);
+
+      updated.add(id);
+
+      return updated;
+    });
+
     const newItem: ArticleTableOfContentItem = {
-      id: crypto.randomUUID(),
+      id,
       name: '',
       link: '',
     };
@@ -277,8 +317,18 @@ export class ArticleEdit {
   }
 
   addSection(): void {
+    const id = crypto.randomUUID();
+
+    this.newItemIds.update((current) => {
+      const updated = new Set(current);
+
+      updated.add(id);
+
+      return updated;
+    });
+
     const newSection: ArticleSection = {
-      id: crypto.randomUUID(),
+      id,
       subHeading: '',
       paragraph: '',
       imageLarge: '',
@@ -325,6 +375,7 @@ export class ArticleEdit {
       ),
     }));
   }
+
   removeSection(id: string): void {
     const shouldRemove = confirm('Czy na pewno chcesz usunąć tę sekcję?');
 
@@ -404,7 +455,11 @@ export class ArticleEdit {
     });
   }
 
-  uploadSectionImage(event: Event, sectionId: string, field: 'imageLarge' | 'imageSmall'): void {
+  uploadSectionImage(
+    event: Event,
+    sectionId: string,
+    field: 'imageLarge' | 'imageSmall',
+  ): void {
     const input = event.target as HTMLInputElement;
 
     const file = input.files?.[0];
@@ -441,7 +496,10 @@ export class ArticleEdit {
     });
   }
 
-  isSectionImageUploading(sectionId: string, field: 'imageLarge' | 'imageSmall'): boolean {
+  isSectionImageUploading(
+    sectionId: string,
+    field: 'imageLarge' | 'imageSmall',
+  ): boolean {
     return this.uploadingSectionImages().has(`${sectionId}-${field}`);
   }
 
@@ -536,7 +594,9 @@ export class ArticleEdit {
   private cleanupUnusedUploadedImages(): void {
     const usedImageKeys = this.getUsedImageKeys();
 
-    const unusedImageKeys = [...this.uploadedImageKeys()].filter((key) => !usedImageKeys.has(key));
+    const unusedImageKeys = [...this.uploadedImageKeys()].filter(
+      (key) => !usedImageKeys.has(key),
+    );
 
     unusedImageKeys.forEach((key) => {
       this.fileService.deleteImage(key).subscribe({

@@ -32,3 +32,31 @@ export interface ArticleSection {
   mobileImageMode: MobileImageMode;
   slug: string;
 }
+
+export interface ArticleSaveRequest {
+  id: string;
+  name: string;
+  image: string;
+  lead: string;
+
+  summaryItems: {
+    id: string | null;
+    name: string;
+  }[];
+
+  tableOfContentItems: {
+    id: string | null;
+    name: string;
+    link: string;
+  }[];
+
+  sections: {
+    id: string | null;
+    subHeading: string;
+    paragraph: string;
+    imageLarge: string;
+    imageSmall: string;
+    mobileImageMode: MobileImageMode;
+    slug: string;
+  }[];
+}

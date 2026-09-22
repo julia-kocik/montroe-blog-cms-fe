@@ -11,4 +11,10 @@ import { ArticleTableOfContentItem } from '../../../models/article.model';
 })
 export class ArticleContents {
   readonly contentsList = input.required<ArticleTableOfContentItem[]>();
+
+  scrollToSection(event: Event, link: string): void {
+    event.preventDefault();
+
+    document.getElementById(link.replace('#', ''))?.scrollIntoView();
+  }
 }

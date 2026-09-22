@@ -29,7 +29,7 @@
 
           <div class="article-sections">
             @for (section of currentArticle.sections; track section.id) {
-              <section class="article-section">
+              <section class="article-section" [id]="section.slug">
                 <app-section-sub-header [text]="section.subHeading" />
 
                 <p class="article-section__paragraph">

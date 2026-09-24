@@ -185,7 +185,10 @@ export class ArticleEdit {
           this.isSaving.set(false);
 
           console.error('Failed to create article', error);
-
+          if (error.status === 400 && error.error?.message) {
+            this.toastService.error(error.error.message);
+            return;
+          }
           if (error.status === 409) {
             this.toastService.error('Artykuł o takim adresie już istnieje.');
             return;
@@ -210,6 +213,11 @@ export class ArticleEdit {
         this.isSaving.set(false);
 
         console.error('Failed to update article', error);
+
+        if (error.status === 400 && error.error?.message) {
+          this.toastService.error(error.error.message);
+          return;
+        }
 
         if (error.status === 409) {
           this.toastService.error('Artykuł o takim adresie już istnieje.');
@@ -455,11 +463,7 @@ export class ArticleEdit {
     });
   }
 
-  uploadSectionImage(
-    event: Event,
-    sectionId: string,
-    field: 'imageLarge' | 'imageSmall',
-  ): void {
+  uploadSectionImage(event: Event, sectionId: string, field: 'imageLarge' | 'imageSmall'): void {
     const input = event.target as HTMLInputElement;
 
     const file = input.files?.[0];
@@ -496,10 +500,7 @@ export class ArticleEdit {
     });
   }
 
-  isSectionImageUploading(
-    sectionId: string,
-    field: 'imageLarge' | 'imageSmall',
-  ): boolean {
+  isSectionImageUploading(sectionId: string, field: 'imageLarge' | 'imageSmall'): boolean {
     return this.uploadingSectionImages().has(`${sectionId}-${field}`);
   }
 
@@ -594,9 +595,7 @@ export class ArticleEdit {
   private cleanupUnusedUploadedImages(): void {
     const usedImageKeys = this.getUsedImageKeys();
 
-    const unusedImageKeys = [...this.uploadedImageKeys()].filter(
-      (key) => !usedImageKeys.has(key),
-    );
+    const unusedImageKeys = [...this.uploadedImageKeys()].filter((key) => !usedImageKeys.has(key));
 
     unusedImageKeys.forEach((key) => {
       this.fileService.deleteImage(key).subscribe({

@@ -12,7 +12,7 @@ import { environment } from '../../environments/environment.production';
 export class ArticleService {
   readonly articles2 = signal<Article[]>(structuredClone(ARTICLES));
 
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiUrl = `${environment.apiUrl}/articles`;
 
   private readonly http = inject(HttpClient);
 

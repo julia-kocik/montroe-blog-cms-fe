@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.production';
 
 export interface ImageUploadResponse {
   key: string;
@@ -10,7 +11,7 @@ export interface ImageUploadResponse {
   providedIn: 'root',
 })
 export class FileService {
-  private readonly apiUrl = 'https://montroe-blog-cms-be.onrender.com';
+  private readonly apiUrl = environment.apiUrl;
 
   constructor(private readonly http: HttpClient) {}
 

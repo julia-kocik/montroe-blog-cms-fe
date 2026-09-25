@@ -33,6 +33,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.production.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -47,6 +53,17 @@
               ],
               "outputHashing": "all"
             },
+
+            "portfolio": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.portfolio.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+
             "development": {
               "optimization": false,
               "extractLicenses": false,

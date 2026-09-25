@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { ARTICLES } from '../data/articles';
 import { Article, ArticleSaveRequest } from '../models/article.model';
+import { environment } from '../../environments/environment.production';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ import { Article, ArticleSaveRequest } from '../models/article.model';
 export class ArticleService {
   readonly articles2 = signal<Article[]>(structuredClone(ARTICLES));
 
-  private readonly apiUrl = 'https://montroe-blog-cms-be.onrender.com/article';
+  private readonly apiUrl = environment.apiUrl;
 
   private readonly http = inject(HttpClient);
 
